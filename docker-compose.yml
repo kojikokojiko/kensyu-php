@@ -9,17 +9,16 @@ services:
       - "./www/:/var/www/html"
       - "./docker/app/apache2/apache2.conf:/etc/apache2/apache2.conf"
       - "./docker/app/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf"
-
+      
     depends_on:
       - postgres
   postgres:
-    build:
-      context: "./docker/postgres/"
+    image: postgres:13
     environment:
-      - POSTGRES_DB=test_db
-      - POSTGRES_USER=test_user
-      - POSTGRES_PASSWORD=test_pass
+      POSTGRES_DB: test_db
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_pass
     volumes:
-      - "./docker/postgres/initdb:/docker-entrypoint-initdb.d"
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
