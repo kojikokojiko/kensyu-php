@@ -1,0 +1,31 @@
+.
+├── Makefile
+├── README.md
+├── composer.json
+├── composer.lock
+├── config.php
+├── directory_structure.txt
+├── docker
+│   ├── app
+│   │   ├── Dockerfile
+│   │   ├── apache2
+│   │   │   ├── apache2.conf
+│   │   │   └── sites-available
+│   │   │       └── 000-default.conf
+│   │   └── php.ini
+│   └── postgres
+│       ├── Dockerfile
+│       └── init
+│           └── init.sql
+├── docker-compose.yml
+└── www
+    ├── article.php
+    ├── config.php
+    ├── functions.php
+    ├── index.php
+    ├── styles
+    │   ├── article.css
+    │   └── index.css
+    └── test.php
+
+10 directories, 19 files
