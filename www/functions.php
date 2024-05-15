@@ -14,4 +14,9 @@ function createArticle($pdo, $title, $body) {
     $stmt = $pdo->prepare('INSERT INTO articles (title, body) VALUES (?, ?)');
     $stmt->execute([$title, $body]);
 }
+
+function updateArticle($pdo, $id, $title, $body) {
+    $stmt = $pdo->prepare('UPDATE articles SET title = ?, body = ? WHERE id = ?');
+    $stmt->execute([$title, $body, $id]);
+}
 ?>

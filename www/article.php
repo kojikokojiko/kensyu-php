@@ -17,6 +17,7 @@ $article = fetchArticle($pdo, $id);
         <h1 class="article-title"><?= htmlspecialchars($article['title']) ?></h1>
         <p class="article-body"><?= nl2br(htmlspecialchars($article['body'])) ?></p>
         <a href="/" class="back-link">Back to list</a>
+        <a href="edit_article.php?id=<?= $id ?>" class="edit-link">Edit</a>
     </div>
 </body>
 </html>

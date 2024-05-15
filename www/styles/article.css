@@ -43,3 +43,18 @@ body {
 .back-link:hover {
     background-color: #4cae4c;
 }
+
+.edit-link {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #c4e86e;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.edit-link:hover {
+    background-color: #839819;
+}
