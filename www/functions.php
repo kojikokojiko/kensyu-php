@@ -19,4 +19,9 @@ function updateArticle($pdo, $id, $title, $body) {
     $stmt = $pdo->prepare('UPDATE articles SET title = ?, body = ? WHERE id = ?');
     $stmt->execute([$title, $body, $id]);
 }
+
+function deleteArticle($pdo, $id) {
+    $stmt = $pdo->prepare('DELETE FROM articles WHERE id = ?');
+    $stmt->execute([$id]);
+}
 ?>

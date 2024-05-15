@@ -2,11 +2,19 @@
 require 'config.php';
 require 'functions.php';
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
+    deleteArticle($pdo, $_POST['id']);
+    header('Location: /');
+    exit();
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     createArticle($pdo, $_POST['title'], $_POST['body']);
     header('Location: /');
     exit();
 }
+
 
 $articles = fetchArticles($pdo);
 ?>
@@ -31,6 +39,10 @@ $articles = fetchArticles($pdo);
                     <div class="article-title"><?= htmlspecialchars($article['title']) ?></div>
                     <div class="article_body"><?= htmlspecialchars($article['body']) ?></div>   
                 </a>
+                <form method="post">
+                    <input type="hidden" name="id" value="<?= $article['id'] ?>">
+                    <button class="submit-button"type="submit" name="delete">Delete</button>
+                </form>
             </li>
         <?php endforeach; ?>
     </ul>
