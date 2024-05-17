@@ -15,7 +15,7 @@ class Route {
     private static $routes = [
         'GET' => [
             '/' => [\App\Controller\HomeController::class, 'index'],
-//            '/article' => [\App\Controller\ArticleController::class, 'show'],
+            '/article' => [\App\Controller\ArticleController::class, 'show'],
         ],
         'POST' => [
 //            '/article' => [\App\Controller\ArticleController::class, 'store'],
