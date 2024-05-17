@@ -15,20 +15,20 @@ use App\Service\Database;
  */
 class ArticleController {
 
-//    public function show(Request $req): Response {
-//        $db = Database::getConnection();
-//        $articleRepository = new ArticleRepository($db);
-//        $article = $articleRepository->getArticleById($req->getQueryParams()['id']);
-//
-//        if ($article) {
-//            ob_start();
-//            include __DIR__ . '/../View/article.php';
-//            $body = ob_get_clean();
-//            return new Response(200, $body);
-//        } else {
-//            return new Response(404, "Article not found");
-//        }
-//    }
+    public function show(Request $req): Response {
+        $db = Database::getConnection();
+        $articleRepository = new ArticleRepository($db);
+        $article = $articleRepository->getArticleById($req->getQueryParams()['id']);
+
+        if ($article) {
+            ob_start();
+            include __DIR__ . '/../View/article.php';
+            $body = ob_get_clean();
+            return new Response(200, $body);
+        } else {
+            return new Response(404, "Article not found");
+        }
+    }
     /**
      * Create a new article.
      *
