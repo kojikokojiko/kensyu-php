@@ -40,36 +40,32 @@ class ArticleRepository implements RepositoryInterface {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Additional methods for article operations can be uncommented and implemented as needed.
+     /**
+      * Get an article by its ID.
+      *
+      * @param int $id The ID of the article.
+      * @return array|null The article data or null if not found.
+      */
+     public function getArticleById(int $id): ?array {
+         $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
+         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+         $stmt->execute();
+         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+     }
 
-    // /**
-    //  * Get an article by its ID.
-    //  *
-    //  * @param int $id The ID of the article.
-    //  * @return array|null The article data or null if not found.
-    //  */
-    // public function getArticleById(int $id): ?array {
-    //     $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
-    //     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    //     $stmt->execute();
-    //     return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-    // }
-
-    // /**
-    //  * Create a new article.
-    //  *
-    //  * @param string $title The title of the article.
-    //  * @param string $body The body of the article.
-    //  * @param string $thumbnailPath The path to the thumbnail image.
-    //  * @return int The ID of the newly created article.
-    //  */
-    // public function createArticle(string $title, string $body, string $thumbnailPath): int {
-    //     $stmt = $this->db->prepare("INSERT INTO articles (title, body, thumbnail_image) VALUES (:title, :body, :thumbnail_image) RETURNING id");
-    //     $stmt->bindParam(':title', $title);
-    //     $stmt->bindParam(':body', $body);
-    //     $stmt->bindParam(':thumbnail_image', $thumbnailPath);
-    //     $stmt->execute();
-    //     return $stmt->fetchColumn();
-    // }
+     /**
+      * Create a new article.
+      *
+      * @param string $title The title of the article.
+      * @param string $body The body of the article.
+      * @return int The ID of the newly created article.
+      */
+     public function createArticle(string $title, string $body): int {
+         $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
+         $stmt->bindParam(':title', $title);
+         $stmt->bindParam(':body', $body);
+         $stmt->execute();
+         return $stmt->fetchColumn();
+     }
 }
 ?>

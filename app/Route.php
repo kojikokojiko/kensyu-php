@@ -18,7 +18,7 @@ class Route {
 //            '/article' => [\App\Controller\ArticleController::class, 'show'],
         ],
         'POST' => [
-//            '/article' => [\App\Controller\ArticleController::class, 'store'],
+            '/article' => [\App\Controller\ArticleController::class, 'store'],
         ]
     ];
 
