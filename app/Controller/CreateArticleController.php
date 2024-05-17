@@ -11,8 +11,9 @@ class CreateArticleController implements ControllerInterface {
 
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
-        $title = $req->get['title'];
-        $body = $req->get['body'];
+//        var_dump($req);
+        $title = $req->post['title'];
+        $body = $req->post['body'];
 
         if ($title && $body) {
             $articleId = $articleRepository->createArticle($title, $body);
