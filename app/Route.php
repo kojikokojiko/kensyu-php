@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace App;
 
+use App\Controller\ControllerInterface;
+
 /**
  * Class Route
  *
@@ -15,25 +17,23 @@ class Route {
      *
      * @param string $method The HTTP method.
      * @param string $uri The URI.
-     * @return array|null An array with the controller object and method name, or null if no route is found.
+     * @return ControllerInterface|null The controller object, or null if no route is found.
      */
-    public static function getControllerAndMethod(string $method, string $uri): ?array {
+    public static function getControllerAndMethod(string $method, string $uri): ?ControllerInterface {
         $path = parse_url($uri, PHP_URL_PATH);
 
         if ($method === 'GET') {
             if ($path === '/') {
-                $controller = new \App\Controller\HomeController();
-                return [$controller, 'index'];
+                return new \App\Controller\TopPageController();
             }
-//            if ($path === '/article') {
-//                 $controller = new \App\Controller\ArticleController();
-//                 return [$controller, 'show'];
-//            }
+            // Uncomment and add more GET routes here
+//             if ($path === '/article') {
+//                 return new \App\Controller\ArticleAction();
+//             }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
             // if ($path === '/article') {
-            //     $controller = new \App\Controller\ArticleController();
-            //     return [$controller, 'store'];
+            //     return new \App\Controller\ArticleAction();
             // }
         }
 

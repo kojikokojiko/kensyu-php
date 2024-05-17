@@ -29,11 +29,10 @@ class App {
             $_POST
         );
 
-        $route = Route::getControllerAndMethod($req->method, $req->uri);
+        $controller = Route::getControllerAndMethod($req->method, $req->uri);
 
-        if ($route) {
-            [$controller, $method] = $route;
-            $res = $controller->$method($req);
+        if ($controller) {
+            $res = $controller($req);
 
             if ($res instanceof Response) {
                 $res->send();

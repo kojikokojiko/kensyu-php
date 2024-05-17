@@ -8,16 +8,16 @@ use App\Repository\ArticleRepository;
 use App\Service\Database;
 
 /**
- * Class HomeController
+ * Class HomeAction
  *
- * Controller for handling the home page.
+ * Controller for handling the home page as a single action.
  *
  * @package App\Controller
  */
-class HomeController {
+class TopPageController implements ControllerInterface{
 
     /**
-     * Index action for the home page.
+     * Invoke action for the home page.
      *
      * This method fetches all articles from the database, renders the home page view,
      * and returns the response.
@@ -25,7 +25,7 @@ class HomeController {
      * @param Request $req The HTTP request object.
      * @return Response The HTTP response object containing the rendered view.
      */
-    public function index(Request $req): Response {
+    public function __invoke(Request $req): Response {
         $db = Database::getConnection();
         $articleRepository = new ArticleRepository($db);
         $articles = $articleRepository->getAllArticles();
