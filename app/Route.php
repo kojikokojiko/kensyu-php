@@ -35,9 +35,9 @@ class Route {
 //             }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
-            // if ($path === '/article') {
-            //     return new \App\Controller\ArticleAction();
-            // }
+             if ($path === '/article') {
+                 return new \App\Controller\CreateArticleController();
+             }
         }
 
         return null;
