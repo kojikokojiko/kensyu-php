@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Controller\ControllerInterface;
+use App\Http\Request;
 
 /**
  * Class Route
@@ -19,7 +20,9 @@ class Route {
      * @param string $uri The URI.
      * @return ControllerInterface|null The controller object, or null if no route is found.
      */
-    public static function getControllerAndMethod(string $method, string $uri): ?ControllerInterface {
+    public static function getController(Request $req): ?ControllerInterface {
+        $method = $req->method;
+        $uri = $req->uri;
         $path = parse_url($uri, PHP_URL_PATH);
 
         if ($method === 'GET') {

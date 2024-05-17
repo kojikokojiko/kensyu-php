@@ -30,7 +30,7 @@ class App {
             $_POST
         );
 
-        $controller = Route::getControllerAndMethod($req->method, $req->uri);
+        $controller = Route::getController($req);
         $db = Database::getConnection();
         if ($controller) {
             $res = $controller($req, $db);
