@@ -4,7 +4,7 @@ COPY php.ini /usr/local/etc/php/
 
 RUN apt-get update && apt-get install -y \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+    && docker-php-ext-install pdo pdo_pgsql && a2enmod rewrite
 
 COPY apache2/sites-available/000-default.conf /etc/apache2/sites-available/
 
