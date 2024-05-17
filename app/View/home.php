@@ -33,7 +33,7 @@
 <ul>
     <?php foreach ($articles as $article): ?>
         <li>
-            <a href="/article?id=<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a>
+            <a href="/article/<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a>
         </li>
     <?php endforeach; ?>
 </ul>

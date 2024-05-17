@@ -18,20 +18,23 @@ class Route {
      *
      * @param string $method The HTTP method.
      * @param string $uri The URI.
-     * @return ControllerInterface|null The controller object, or null if no route is found.
+     * return callable|null The controller object, or null if no route is found.
      */
-    public static function getController(Request $req): ?ControllerInterface {
+    public static function getController(Request $req): ?callable {
         $method = $req->method;
         $uri = $req->uri;
         $path = parse_url($uri, PHP_URL_PATH);
+        $pathParts = explode('/', trim($path, '/'));
 
         if ($method === 'GET') {
             if ($path === '/') {
                 return new \App\Controller\TopPageController();
             }
-             if ($path === '/article') {
-                 return new \App\Controller\EditPageController();
-             }
+            // Handle routes like /article/{id}
+            if (count($pathParts) === 2 && $pathParts[0] === 'article') {
+                $articleId = (int) $pathParts[1];
+                return new \App\Controller\EditPageController($articleId);
+            }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
              if ($path === '/article') {

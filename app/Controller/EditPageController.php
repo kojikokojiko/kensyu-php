@@ -16,7 +16,11 @@ use Exception;
  * @package App\Controller
  */
 class EditPageController implements ControllerInterface {
+    private int $articleId;
 
+    public function __construct(int $articleId) {
+        $this->articleId = $articleId;
+    }
     /**
      * Invoke action for the home page.
      *
@@ -30,8 +34,8 @@ class EditPageController implements ControllerInterface {
      */
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
-        $articleId=(int)$req->get['id'];
-        $article = $articleRepository->getArticleById($articleId);
+
+        $article = $articleRepository->getArticleById($this->articleId);
 
         if ($article) {
             ob_start();
