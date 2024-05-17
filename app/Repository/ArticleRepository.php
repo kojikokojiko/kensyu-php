@@ -71,13 +71,12 @@ class ArticleRepository implements RepositoryInterface {
     //  * @param string $thumbnailPath The path to the thumbnail image.
     //  * @return int The ID of the newly created article.
     //  */
-    // public function createArticle(string $title, string $body, string $thumbnailPath): int {
-    //     $stmt = $this->db->prepare("INSERT INTO articles (title, body, thumbnail_image) VALUES (:title, :body, :thumbnail_image) RETURNING id");
-    //     $stmt->bindParam(':title', $title);
-    //     $stmt->bindParam(':body', $body);
-    //     $stmt->bindParam(':thumbnail_image', $thumbnailPath);
-    //     $stmt->execute();
-    //     return $stmt->fetchColumn();
-    // }
+     public function createArticle(string $title, string $body): int {
+         $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
+         $stmt->bindParam(':title', $title);
+         $stmt->bindParam(':body', $body);
+         $stmt->execute();
+         return $stmt->fetchColumn();
+     }
 }
 ?>
