@@ -4,6 +4,7 @@ namespace App;
 
 use App\Http\Request;
 use App\Http\Response;
+use App\Service\Database;
 
 /**
  * Class App
@@ -30,7 +31,7 @@ class App {
         );
 
         $controller = Route::getControllerAndMethod($req->method, $req->uri);
-
+        $db = Database::getConnection();
         if ($controller) {
             $res = $controller($req);
 

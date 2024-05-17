@@ -5,16 +5,17 @@ namespace App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 use App\Repository\ArticleRepository;
-use App\Service\Database;
+use PDO;
+use Exception;
 
 /**
- * Class HomeAction
+ * Class TopPageController
  *
  * Controller for handling the home page as a single action.
  *
  * @package App\Controller
  */
-class TopPageController implements ControllerInterface{
+class TopPageController implements ControllerInterface {
 
     /**
      * Invoke action for the home page.
@@ -23,10 +24,11 @@ class TopPageController implements ControllerInterface{
      * and returns the response.
      *
      * @param Request $req The HTTP request object.
+     * @param PDO $db The database connection object.
      * @return Response The HTTP response object containing the rendered view.
+     * @throws Exception
      */
-    public function __invoke(Request $req): Response {
-        $db = Database::getConnection();
+    public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
         $articles = $articleRepository->getAllArticles();
 
