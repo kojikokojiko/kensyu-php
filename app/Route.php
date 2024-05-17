@@ -10,55 +10,35 @@ namespace App;
  */
 class Route {
     /**
-     * Get the route based on the HTTP method and URI.
-     *
-     * @param string $method The HTTP method.
-     * @param string $uri The URI.
-     * @return array|null The route information or null if no route is found.
+     * @var array The route definitions.
      */
-    private static function getRoute(string $method, string $uri) {
-        $routes = [
-            'GET' => [
-                '/' => [\App\Controller\HomeController::class, 'index'],
-            ],
-            'POST' => [
-            ]
-        ];
-
-        $path = parse_url($uri, PHP_URL_PATH);
-
-        return $routes[$method][$path] ?? null;
-    }
+    private static $routes = [
+        'GET' => [
+            '/' => [\App\Controller\HomeController::class, 'index'],
+//            '/article' => [\App\Controller\ArticleController::class, 'show'],
+        ],
+        'POST' => [
+//            '/article' => [\App\Controller\ArticleController::class, 'store'],
+        ]
+    ];
 
     /**
-     * Get the controller based on the HTTP method and URI.
+     * Get the controller and method based on the HTTP method and URI.
      *
      * @param string $method The HTTP method.
      * @param string $uri The URI.
-     * @return object|null The controller object or null if no controller is found.
+     * @return array|null An array with the controller object and method name, or null if no route is found.
      */
-    public static function getController(string $method, string $uri) {
-        $route = self::getRoute($method, $uri);
+    public static function getControllerAndMethod(string $method, string $uri): ?array {
+        $path = parse_url($uri, PHP_URL_PATH);
 
-        if ($route) {
-            [$class, $method] = $route;
-            return new $class();
+        if (isset(self::$routes[$method][$path])) {
+            [$class, $controllerMethod] = self::$routes[$method][$path];
+            $controller = new $class();
+            return [$controller, $controllerMethod];
         }
 
         return null;
-    }
-
-    /**
-     * Get the controller method based on the HTTP method and URI.
-     *
-     * @param string $method The HTTP method.
-     * @param string $uri The URI.
-     * @return string|null The controller method or null if no method is found.
-     */
-    public static function getControllerMethod(string $method, string $uri): ?string {
-        $route = self::getRoute($method, $uri);
-
-        return $route[1] ?? null;
     }
 }
 ?>

@@ -30,10 +30,10 @@ class App {
             $_POST
         );
 
-        $controller = Route::getController($req->getMethod(), $req->getUri());
+        $route = Route::getControllerAndMethod($req->getMethod(), $req->getUri());
 
-        if ($controller) {
-            $method = Route::getControllerMethod($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+        if ($route) {
+            [$controller, $method] = $route;
             $res = $controller->$method($req);
 
             if ($res instanceof Response) {
