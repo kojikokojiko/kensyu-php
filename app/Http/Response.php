@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace App\Http;
 
-
 /**
  * Class Response
  *
@@ -10,22 +9,7 @@ namespace App\Http;
  *
  * @package App\Http
  */
-class Response {
-    /**
-     * @var int The HTTP status code of the response.
-     */
-    private $statusCode;
-
-    /**
-     * @var string The body of the response.
-     */
-    private $body;
-
-    /**
-     * @var array The headers of the response.
-     */
-    private $headers;
-
+readonly class Response {
     /**
      * Response constructor.
      *
@@ -35,38 +19,11 @@ class Response {
      * @param string $body The body of the response.
      * @param array $headers The headers of the response.
      */
-    public function __construct(int $statusCode, string $body, array $headers = []) {
-        $this->statusCode = $statusCode;
-        $this->body = $body;
-        $this->headers = $headers;
-    }
-
-    /**
-     * Get the HTTP status code of the response.
-     *
-     * @return int The HTTP status code.
-     */
-    public function getStatusCode(): int {
-        return $this->statusCode;
-    }
-
-    /**
-     * Get the body of the response.
-     *
-     * @return string The body.
-     */
-    public function getBody(): string {
-        return $this->body;
-    }
-
-    /**
-     * Get the headers of the response.
-     *
-     * @return array The headers.
-     */
-    public function getHeaders(): array {
-        return $this->headers;
-    }
+    public function __construct(
+        public int    $statusCode,
+        public string $body,
+        public array  $headers = []
+    ) {}
 
     /**
      * Send the response.

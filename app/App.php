@@ -29,7 +29,7 @@ class App {
             $_POST
         );
 
-        $route = Route::getControllerAndMethod($req->getMethod(), $req->getUri());
+        $route = Route::getControllerAndMethod($req->method, $req->uri);
 
         if ($route) {
             [$controller, $method] = $route;
