@@ -33,7 +33,7 @@ class App {
         $controller = Route::getControllerAndMethod($req->method, $req->uri);
         $db = Database::getConnection();
         if ($controller) {
-            $res = $controller($req);
+            $res = $controller($req, $db);
 
             if ($res instanceof Response) {
                 $res->send();
