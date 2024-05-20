@@ -23,8 +23,8 @@ class UpdateArticleController implements ControllerInterface {
             $rowsUpdated = $articleRepository->updateArticle($title, $body, $this->articleId);
 
             if ($rowsUpdated > 0) {
-                // 更新が成功した場合、リダイレクトするためにLocationヘッダを設定
-                return new Response(302, '', ['Location: /']);
+                // 更新が成功した場合、記事詳細ページにリダイレクト
+                return new Response(302, '', ['Location: /article/' . $this->articleId]);
             } else {
                 // 更新が行われなかった場合
                 return new Response(404, "Article not found or no changes made");
