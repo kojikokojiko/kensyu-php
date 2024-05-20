@@ -4,7 +4,6 @@ namespace App;
 
 use App\Http\Request;
 use App\Http\Response;
-use App\Database\Database;
 
 /**
  * Class App

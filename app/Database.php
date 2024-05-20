@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace App\Database;
+namespace App;
 
 use Dotenv\Dotenv;
 use Exception;
@@ -12,7 +12,7 @@ class Database {
     public static function getConnection(): PDO {
         if (!self::$connection) {
             // .envファイルの読み込み
-            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+            $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
             $dotenv->load();
 
             $host = $_ENV['DB_HOST']?: 'localhost';
