@@ -35,7 +35,7 @@ class ArticleRepository implements RepositoryInterface {
      *
      * Retrieves all articles from the database.
      *
-     * @return array An array of articles.
+     * @return Article[] An array of Article objects.
      */
     public function getAllArticles(): array {
         $stmt = $this->db->query("SELECT * FROM articles");
