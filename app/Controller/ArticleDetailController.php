@@ -15,7 +15,7 @@ use Exception;
  *
  * @package App\Controller
  */
-class EditPageController implements ControllerInterface {
+class ArticleDetailController implements ControllerInterface {
     private int $articleId;
 
     public function __construct(int $articleId) {
@@ -39,7 +39,7 @@ class EditPageController implements ControllerInterface {
 
         if ($article) {
             ob_start();
-            include __DIR__ . '/../View/edit_article.php';
+            include __DIR__ . '/../View/article_detail.php';
             $body = ob_get_clean();
             return new Response(200, $body);
         } else {
