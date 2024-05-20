@@ -1,15 +1,27 @@
 .
 ├── Makefile
 ├── README.md
+├── app
+│   ├── App.php
+│   ├── Controller
+│   │   └── HomeController.php
+│   ├── Model
+│   │   └── Article.php
+│   ├── Repository
+│   │   ├── ArticleRepository.php
+│   │   └── RepositoryInterface.php
+│   ├── Route.php
+│   ├── Service
+│   │   └── Database.php
+│   └── View
+│       └── home.php
 ├── composer.json
 ├── composer.lock
-├── config.php
 ├── directory_structure.txt
 ├── docker
 │   ├── app
 │   │   ├── Dockerfile
 │   │   ├── apache2
-│   │   │   ├── apache2.conf
 │   │   │   └── sites-available
 │   │   │       └── 000-default.conf
 │   │   └── php.ini
@@ -18,7 +30,21 @@
 │       └── init
 │           └── init.sql
 ├── docker-compose.yml
-└── www
+├── public
+│   ├── index.php
+│   └── styles
+└── src
+    ├── Core
+    │   ├── Domain
+    │   └── UseCase
+    ├── Infrastructure
+    │   ├── Config
+    │   └── Persistence
+    ├── Web
+    │   ├── Controllers
+    │   ├── Public
+    │   │   └── css
+    │   └── Views
     ├── article.php
     ├── config.php
     ├── functions.php
@@ -28,4 +54,4 @@
     │   └── index.css
     └── test.php
 
-10 directories, 19 files
+28 directories, 27 files

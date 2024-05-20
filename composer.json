@@ -7,15 +7,16 @@
         "name": "Koji Iwase"
     }],
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "vlucas/phpdotenv": "^5.6",
         "slim/slim": "4.*",
         "slim/psr7": "^1.6",
-        "illuminate/database": "^11.7"
+        "illuminate/database": "^11.7",
+        "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {
-            "KensyuPhp\\": "src/"
+            "App\\": "app/"
         }
     }
 }
