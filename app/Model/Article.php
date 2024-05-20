@@ -10,20 +10,6 @@ namespace App\Model;
  * @package App\Model
  */
 readonly class Article {
-    /**
-     * @var int The ID of the article.
-     */
-    private int $id;
-
-    /**
-     * @var string The title of the article.
-     */
-    private string $title;
-
-    /**
-     * @var string The body of the article.
-     */
-    private string $body;
 
     /**
      * Article constructor.
@@ -34,37 +20,10 @@ readonly class Article {
      * @param string $title The title of the article.
      * @param string $body The body of the article.
      */
-    public function __construct(int $id, string $title, string $body) {
-        $this->id = $id;
-        $this->title = $title;
-        $this->body = $body;
-    }
-
-    /**
-     * Get the ID of the article.
-     *
-     * @return int The ID of the article.
-     */
-    public function getId(): int {
-        return $this->id;
-    }
-
-    /**
-     * Get the title of the article.
-     *
-     * @return string The title of the article.
-     */
-    public function getTitle(): string {
-        return $this->title;
-    }
-
-    /**
-     * Get the body of the article.
-     *
-     * @return string The body of the article.
-     */
-    public function getBody(): string {
-        return $this->body;
-    }
+    public function __construct(
+        public int $id,
+        public string $title,
+        public string $body,
+    ){}
 }
 ?>
