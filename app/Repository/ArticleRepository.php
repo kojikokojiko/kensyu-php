@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Repository;
 
+use App\Model\Article;
 use App\Repository\RepositoryInterface;
 use PDO;
 
@@ -38,9 +39,15 @@ class ArticleRepository implements RepositoryInterface {
      */
     public function getAllArticles(): array {
         $stmt = $this->db->query("SELECT * FROM articles");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+        $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $articles = [];
+        foreach ($articlesData as $data) {
+            $articles[] = new Article($data['id'], $data['title'], $data['body']);
+        }
+
+        return $articles;
+    }
     // Additional methods for article operations can be uncommented and implemented as needed.
 
     // /**

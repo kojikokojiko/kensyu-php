@@ -9,21 +9,21 @@ namespace App\Model;
  *
  * @package App\Model
  */
-class Article {
+readonly class Article {
     /**
      * @var int The ID of the article.
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string The title of the article.
      */
-    private $title;
+    private string $title;
 
     /**
      * @var string The body of the article.
      */
-    private $body;
+    private string $body;
 
     /**
      * Article constructor.
