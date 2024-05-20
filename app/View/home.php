@@ -34,6 +34,11 @@
     <?php foreach ($articles as $article): ?>
         <li>
             <a href="/article/<?php echo $article['id']; ?>"><?php echo htmlspecialchars($article['title']); ?></a>
+            <!-- DELETE Article Form -->
+            <form action="/article/<?= $article['id'] ?>" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit">Delete Article</button>
+            </form>
         </li>
     <?php endforeach; ?>
 </ul>

@@ -8,12 +8,13 @@
 <!-- New Article Form -->
 <h1>Article Detail</h1>
 
-<form action="/article" method="POST" enctype="multipart/form-data">
-
-    <div>Title:<?php echo htmlspecialchars($article['title']); ?></div>
-    <div>Body:<?php echo htmlspecialchars($article['body']); ?></div>
-    <a class="submit-button" href="/">To home</a>
-    <a class="submit-button" href="/article/<?= $article['id'] ?>/edit">Edit Article</a>
-
+<div>Title:<?php echo htmlspecialchars($article['title']); ?></div>
+<div>Body:<?php echo htmlspecialchars($article['body']); ?></div>
+<a class="submit-button" href="/">To home</a>
+<a class="submit-button" href="/article/<?= $article['id'] ?>/edit">Edit Article</a>
+<form action="/article/<?= $article['id'] ?>" method="POST">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Delete Article</button>
+</form>
 </body>
 </html>
