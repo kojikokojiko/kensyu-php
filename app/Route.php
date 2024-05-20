@@ -26,6 +26,11 @@ class Route {
         $path = parse_url($uri, PHP_URL_PATH);
         $pathParts = explode('/', trim($path, '/'));
 
+        // Check for method override
+        if ($method === 'POST' && isset($req->post['_method'])) {
+            $method = strtoupper($req->post['_method']);
+        }
+
         if ($method === 'GET') {
             if ($path === '/') {
                 return new \App\Controller\TopPageController();
@@ -50,8 +55,13 @@ class Route {
                 $articleId = (int) $pathParts[1];
                 return new \App\Controller\UpdateArticleController($articleId);
             }
+        }elseif ($method === 'DELETE') {
+            // Handle routes like /article/{id}
+            if (count($pathParts) === 2 && $pathParts[0] === 'article') {
+                $articleId = (int) $pathParts[1];
+                return new \App\Controller\DeleteArticleController($articleId);
+            }
         }
-
         return null;
     }
 }

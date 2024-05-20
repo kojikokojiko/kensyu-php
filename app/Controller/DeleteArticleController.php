@@ -7,30 +7,44 @@ use App\Http\Response;
 use App\Repository\ArticleRepository;
 use PDO;
 
+/**
+ * Class DeleteArticleController
+ *
+ * Handles the deletion of an article.
+ *
+ * @package App\Controller
+ */
 class DeleteArticleController implements ControllerInterface {
     private int $articleId;
 
+    /**
+     * DeleteArticleController constructor.
+     *
+     * @param int $articleId The ID of the article to be deleted.
+     */
     public function __construct(int $articleId) {
         $this->articleId = $articleId;
     }
 
+    /**
+     * Invoke method to handle the HTTP request.
+     *
+     * @param Request $req The HTTP request object.
+     * @param PDO $db The database connection object.
+     * @return Response The HTTP response object.
+     */
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
-        $title = $req->post['title'];
-        $body = $req->post['body'];
 
-        if ($title && $body) {
-            $rowsUpdated = $articleRepository->updateArticle($title, $body, $this->articleId);
+        // Delete the article by its ID.
+        $rowsDeleted = $articleRepository->deleteArticle($this->articleId);
 
-            if ($rowsUpdated > 0) {
-                // 更新が成功した場合、記事詳細ページにリダイレクト
-                return new Response(302, '', ['Location: /article/' . $this->articleId]);
-            } else {
-                // 更新が行われなかった場合
-                return new Response(404, "Article not found or no changes made");
-            }
+        if ($rowsDeleted > 0) {
+            // If deletion is successful, redirect to the article list page.
+            return new Response(302, '', ['Location: /']);
         } else {
-            return new Response(400, "Invalid input");
+            // If the article was not found or already deleted, return a 404 response.
+            return new Response(404, "Article not found or already deleted");
         }
     }
 }
