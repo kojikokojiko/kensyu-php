@@ -63,19 +63,19 @@ class ArticleRepository implements RepositoryInterface {
     //     return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     // }
 
-    // /**
-    //  * Create a new article.
-    //  *
-    //  * @param string $title The title of the article.
-    //  * @param string $body The body of the article.
-    //  * @param string $thumbnailPath The path to the thumbnail image.
-    //  * @return int The ID of the newly created article.
-    //  */
+     /**
+      * Create a new article.
+      *
+      * @param string $title The title of the article.
+      * @param string $body The body of the article.
+      * @return int The ID of the newly created article.
+      */
      public function createArticle(string $title, string $body): int {
          $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
          $stmt->bindParam(':title', $title);
          $stmt->bindParam(':body', $body);
          $stmt->execute();
+         // 新しいレコードのIDを取得して返す
          return $stmt->fetchColumn();
      }
 }
