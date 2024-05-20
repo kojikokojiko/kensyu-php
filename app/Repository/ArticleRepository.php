@@ -71,5 +71,17 @@ class ArticleRepository implements RepositoryInterface {
          $stmt->execute();
          return $stmt->fetchColumn();
      }
+
+     public function updateArticle(string $title, string $body,int $id): int {
+            $stmt = $this->db->prepare("UPDATE articles SET title = :title, body = :body WHERE id = :id");
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':body', $body);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+
+            $stmt->execute();
+            return $stmt->rowCount();;
+     }
+
 }
 ?>

@@ -35,11 +35,21 @@ class Route {
                 $articleId = (int) $pathParts[1];
                 return new \App\Controller\ArticleDetailController($articleId);
             }
+            // Handle routes like /article/{id}/edit
+            if (count($pathParts) === 3 && $pathParts[0] === 'article' && $pathParts[2] === 'edit') {
+                $articleId = (int) $pathParts[1];
+                return new \App\Controller\EditPageController($articleId);
+            }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
              if ($path === '/article') {
                  return new \App\Controller\CreateArticleController();
              }
+             // Handle routes like /article/{id}/edit
+            if (count($pathParts) === 3 && $pathParts[0] === 'article' && $pathParts[2] === 'edit') {
+                $articleId = (int) $pathParts[1];
+                return new \App\Controller\UpdateArticleController($articleId);
+            }
         }
 
         return null;
