@@ -1,3 +1,12 @@
+<?php
+
+if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
+    echo '<script>alert("Invalid input: ' . implode(", ", $_SESSION['errors']) . '");</script>';
+    // Clear the errors from session
+    unset($_SESSION['errors']);
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>

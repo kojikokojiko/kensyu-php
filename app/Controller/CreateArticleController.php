@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 use App\Repository\ArticleRepository;
+use App\Validation\ArticleValidator;
 use PDO;
 
 /**
@@ -31,12 +32,21 @@ class CreateArticleController implements ControllerInterface {
         $title = $req->post['title'];
         $body = $req->post['body'];
 
-        if ($title && $body) {
+
+        // Validate the input
+        $validator = new ArticleValidator();
+        $errors = $validator->validateArticle($title, $body);
+
+
+        if (empty($errors)) {
             $articleId = $articleRepository->createArticle($title, $body);
             // Redirect to the home page after successful creation
             return new Response(302, '', ['Location: /']);
         } else {
-            return new Response(400, "Invalid input");
+            // Save errors to session
+            $_SESSION['errors'] = $errors;
+            // Redirect to the home page with errors
+            return new Response(302, '', ['Location: /']);
         }
     }
 }
