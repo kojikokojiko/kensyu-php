@@ -46,7 +46,7 @@ class CreateArticleController implements ControllerInterface {
             // Save errors to session
             $_SESSION['errors'] = $errors;
             // Redirect to the home page with errors
-            return new Response(302, '', ['Location: /']);
+            return new Response(400, '', ['Location: /']);
         }
     }
 }

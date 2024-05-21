@@ -1,3 +1,12 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Article List</title>
+</head>
+<body>
+
 <?php
 
 if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
@@ -6,13 +15,6 @@ if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
     unset($_SESSION['errors']);
 }
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Article List</title>
-</head>
-<body>
 <h1>Article List</h1>
 
 <!-- New Article Form -->
@@ -51,5 +53,6 @@ if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
 <?php else: ?>
     <p>No articles found.</p>
 <?php endif; ?>
+
 </body>
 </html>
