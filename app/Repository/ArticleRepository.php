@@ -50,18 +50,18 @@ class ArticleRepository implements RepositoryInterface {
     }
     // Additional methods for article operations can be uncommented and implemented as needed.
 
-    // /**
-    //  * Get an article by its ID.
-    //  *
-    //  * @param int $id The ID of the article.
-    //  * @return array|null The article data or null if not found.
-    //  */
-    // public function getArticleById(int $id): ?array {
-    //     $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
-    //     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    //     $stmt->execute();
-    //     return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-    // }
+    /**
+     * Get an article by its ID.
+     *
+     * @param int $id The ID of the article.
+     * @return array|null The article data or null if not found.
+     */
+    public function getArticleById(int $id): ?array {
+        $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
 
      /**
       * Create a new article.
