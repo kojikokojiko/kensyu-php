@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Http\Request;
 use App\Http\Response;
+use App\Model\Article;
 use App\Repository\ArticleRepository;
 use App\Validation\ArticleValidator;
+use InvalidArgumentException;
 use PDO;
 
 /**
@@ -29,24 +31,23 @@ class CreateArticleController implements ControllerInterface {
      */
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
+
+
         $title = $req->post['title'];
         $body = $req->post['body'];
 
+        try{
+            $article= new Article(null,$title, $body);
+        }catch (InvalidArgumentException $e){
+            $_SESSION['errors'] = [$e->getMessage()];
 
-        // Validate the input
-        $validator = new ArticleValidator();
-        $errors = $validator->validateArticle($title, $body);
-
-
-        if (empty($errors)) {
-            $articleId = $articleRepository->createArticle($title, $body);
-            // Redirect to the home page after successful creation
             return new Response(302, '', ['Location: /']);
-        } else {
-            // Save errors to session
-            $_SESSION['errors'] = $errors;
-            // Redirect to the home page with errors
-            return new Response(400, '', ['Location: /']);
+
         }
+
+        $articleId = $articleRepository->createArticle($article);
+        // Redirect to the home page after successful creation
+        return new Response(302, '', ['Location: /']);
+
     }
 }

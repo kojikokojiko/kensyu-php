@@ -70,10 +70,10 @@ class ArticleRepository implements RepositoryInterface {
       * @param string $body The body of the article.
       * @return int The ID of the newly created article.
       */
-     public function createArticle(string $title, string $body): int {
+     public function createArticle(Article $article): int {
          $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
-         $stmt->bindParam(':title', $title);
-         $stmt->bindParam(':body', $body);
+         $stmt->bindValue(':title', $article->title);
+         $stmt->bindValue(':body', $article->body);
          $stmt->execute();
          // 新しいレコードのIDを取得して返す
          return $stmt->fetchColumn();
