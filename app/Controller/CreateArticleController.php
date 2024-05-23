@@ -42,7 +42,6 @@ class CreateArticleController implements ControllerInterface {
             $_SESSION['errors'] = [$e->getMessage()];
 
             return new Response(302, '', ['Location: /']);
-
         }
 
         $articleId = $articleRepository->createArticle($article);
