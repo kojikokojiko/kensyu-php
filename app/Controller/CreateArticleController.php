@@ -6,7 +6,6 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleRepository;
-use App\Validation\ArticleValidator;
 use InvalidArgumentException;
 use PDO;
 
