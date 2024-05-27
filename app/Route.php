@@ -29,6 +29,9 @@ class Route {
             if ($path === '/') {
                 return new \App\Controller\TopPageController();
             }
+            if ($path === '/error') {
+                return new \App\Controller\ErrorController();
+            }
             // Uncomment and add more GET routes here
 //             if ($path === '/article') {
 //                 return new \App\Controller\ArticleAction();
