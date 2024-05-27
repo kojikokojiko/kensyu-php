@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Controller;
 
+use App\Exceptions\RepositoryException;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
@@ -37,15 +38,15 @@ class CreateArticleController implements ControllerInterface {
 
         try{
             $article= new Article(null,$title, $body);
+            $articleId = $articleRepository->createArticle($article);
+            // Redirect to the home page after successful creation
+            return new Response(302, '', ['Location: /']);
+
         }catch (InvalidArgumentException $e){
             $_SESSION['errors'] = [$e->getMessage()];
-
             return new Response(302, '', ['Location: /']);
         }
 
-        $articleId = $articleRepository->createArticle($article);
-        // Redirect to the home page after successful creation
-        return new Response(302, '', ['Location: /']);
 
     }
 }
