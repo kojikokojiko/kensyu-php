@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace App\Controller;
+use App\Exceptions\RepositoryException;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
@@ -43,8 +44,10 @@ class CreateArticleController implements ControllerInterface {
         }catch (InvalidArgumentException $e){
             $_SESSION['errors'] = [$e->getMessage()];
             return new Response(302, '', ['Location: /']);
+        }catch(RepositoryException $e){
+            $_SESSION['errors'] = [$e->getMessage()];
+            $errorController = new ErrorController();
+            return $errorController($req, $db);
         }
-
-
     }
 }

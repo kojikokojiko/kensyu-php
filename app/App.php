@@ -42,11 +42,8 @@ class App {
         $controller = Route::getController($req);
         $db = Database::getConnection();
 
-        try {
-            $this->handleController($controller, $req, $db);
-        } catch (RepositoryException $e) {
-            $this->handleError($e, $req, $db);
-        }
+        $this->handleController($controller, $req, $db);
+
     }
 
     /**
@@ -79,34 +76,6 @@ class App {
             $errorResponse = new Response(
                 404, // ステータスコード
                 "Page not found.", // レスポンスボディ
-                ['Content-Type: text/plain'] // ヘッダー
-            );
-            $errorResponse->send();
-        }
-    }
-
-    /**
-     * Handle an error.
-     *
-     * This method handles the error, sets the error message in the session, and sends the error response.
-     *
-     * @param \Exception $e The exception that was caught.
-     * @param Request $req The HTTP request object.
-     * @param PDO $db The database connection object.
-     * @return void
-     */
-    private function handleError(\Exception $e, Request $req, $db): void {
-        $_SESSION['errors'] = [$e->getMessage()];
-        $errorController = new ErrorController();
-        $res = $errorController($req, $db);
-
-        if ($res instanceof Response) {
-            $res->send();
-        } else {
-            // Responseクラスを使ってエラーレスポンスを生成
-            $errorResponse = new Response(
-                500, // ステータスコード
-                "An error occurred: " . $e->getMessage(), // レスポンスボディ
                 ['Content-Type: text/plain'] // ヘッダー
             );
             $errorResponse->send();
