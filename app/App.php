@@ -66,12 +66,22 @@ class App {
             if ($res instanceof Response) {
                 $res->send();
             } else {
-                http_response_code(500);
-                echo "Invalid response from controller.";
+                // Responseクラスを使ってエラーレスポンスを生成
+                $errorResponse = new Response(
+                    500, // ステータスコード
+                    "Invalid response from controller.", // レスポンスボディ
+                    ['Content-Type: text/plain'] // ヘッダー
+                );
+                $errorResponse->send();
             }
         } else {
-            http_response_code(404);
-            echo "Page not found.";
+            // Responseクラスを使って404エラーレスポンスを生成
+            $errorResponse = new Response(
+                404, // ステータスコード
+                "Page not found.", // レスポンスボディ
+                ['Content-Type: text/plain'] // ヘッダー
+            );
+            $errorResponse->send();
         }
     }
 
@@ -93,8 +103,13 @@ class App {
         if ($res instanceof Response) {
             $res->send();
         } else {
-            http_response_code(500);
-            echo "An error occurred: " . $e->getMessage();
+            // Responseクラスを使ってエラーレスポンスを生成
+            $errorResponse = new Response(
+                500, // ステータスコード
+                "An error occurred: " . $e->getMessage(), // レスポンスボディ
+                ['Content-Type: text/plain'] // ヘッダー
+            );
+            $errorResponse->send();
         }
     }
 }
