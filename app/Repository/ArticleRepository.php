@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace App\Repository;
 
-use App\Exceptions\RepositoryException;
 use App\Model\Article;
 use PDO;
 use PDOException;
@@ -60,19 +59,14 @@ class ArticleRepository implements RepositoryInterface {
      *
      * @param Article $article The article to create.
      * @return int The ID of the newly created article.
-     * @throws RepositoryException If there is an error with the database query.
      */
     public function createArticle(Article $article): int {
-        try {
-            $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
-            $stmt->bindValue(':title', $article->title);
-            $stmt->bindValue(':body', $article->body);
-            $stmt->execute();
+        $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
+        $stmt->bindValue(':title', $article->title);
+        $stmt->bindValue(':body', $article->body);
+        $stmt->execute();
 
-            return (int) $stmt->fetchColumn();
-        } catch (PDOException $e) {
-            throw new RepositoryException("Failed to create article: " . $e->getMessage(), 0, $e);
-        }
+        return (int) $stmt->fetchColumn();
     }
 
     // Additional methods for article operations can be uncommented and implemented as needed.

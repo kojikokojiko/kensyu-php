@@ -6,28 +6,23 @@ use App\Http\Request;
 use App\Http\Response;
 use PDO;
 
-/**
- * Class ErrorController
- *
- * Controller for handling error display.
- *
- * @package App\Controller
- */
 class ErrorController implements ControllerInterface {
-    /**
-     * Invoke action for displaying the error page.
-     *
-     * This method returns the error page with any error messages stored in the session.
-     *
-     * @param Request $req
-     * @param PDO $db
-     * @return Response The HTTP response object.
-     */
-    public function __invoke(Request $req, PDO $db): Response {
-        ob_start();
-        include __DIR__ . '/../View/error.php';
+    private string $errorMessage;
+    private int $statusCode;
 
-        $body = ob_get_clean();
-        return new Response(400, $body);
+    public function __construct(string $errorMessage = "An error occurred", int $statusCode = 500) {
+        $this->errorMessage = $errorMessage;
+        $this->statusCode = $statusCode;
+    }
+
+    public function __invoke(Request $req, PDO $db): Response {
+        // エラーページの生成ロジック
+        $body = "<html><head><title>Error</title></head><body><h1>Error: {$this->statusCode}</h1><p>{$this->errorMessage}</p></body></html>";
+
+        return new Response(
+            $this->statusCode,
+            $body,
+            ['Content-Type: text/html']
+        );
     }
 }

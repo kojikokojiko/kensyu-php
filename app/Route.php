@@ -42,8 +42,9 @@ class Route {
                  return new \App\Controller\CreateArticleController();
              }
         }
+//        どれも通らなかったら404のエラーコントローラーを返す
+        return new \App\Controller\ErrorController("404 Not Found", 404);
 
-        return null;
     }
 }
 ?>
