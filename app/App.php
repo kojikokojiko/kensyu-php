@@ -3,11 +3,8 @@ declare(strict_types=1);
 namespace App;
 
 use App\Controller\ErrorController;
-use App\Exceptions\RepositoryException;
 use App\Http\Request;
-use App\Http\Response;
 use Exception;
-use PDO;
 
 /**
  * Class App
