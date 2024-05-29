@@ -36,22 +36,17 @@ class ArticleRepository implements RepositoryInterface {
      * Retrieves all articles from the database.
      *
      * @return Article[] An array of Article objects.
-     * @throws RepositoryException If there is an error with the database query.
      */
     public function getAllArticles(): array {
-        try {
-            $stmt = $this->db->query("SELECT * FROM articles");
-            $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->db->query("SELECT * FROM articles");
+        $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $articles = [];
-            foreach ($articlesData as $data) {
-                $articles[] = new Article($data['id'], $data['title'], $data['body']);
-            }
-
-            return $articles;
-        } catch (PDOException $e) {
-            throw new RepositoryException("Failed to retrieve articles: " . $e->getMessage(), 0, $e);
+        $articles = [];
+        foreach ($articlesData as $data) {
+            $articles[] = new Article($data['id'], $data['title'], $data['body']);
         }
+
+        return $articles;
     }
 
     /**
