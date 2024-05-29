@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Model\Article;
 use PDO;
-use PDOException;
 
 /**
  * Class ArticleRepository
