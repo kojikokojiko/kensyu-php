@@ -80,7 +80,7 @@ readonly class Article {
         if (trim($body) === '') {
             $errors[] = "Body is required.";
         } elseif (strlen($body) < 10) {
-            $errors[] = "Body must be at least 50 characters.";
+            $errors[] = "Body must be at least 10 characters.";
         }
 
         return $errors;
