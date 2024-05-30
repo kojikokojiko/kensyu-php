@@ -29,18 +29,22 @@ class Route {
             if ($path === '/') {
                 return new \App\Controller\TopPageController();
             }
+            if ($path === '/error') {
+                return new \App\Controller\ErrorController();
+            }
             // Uncomment and add more GET routes here
 //             if ($path === '/article') {
 //                 return new \App\Controller\ArticleAction();
 //             }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
-            // if ($path === '/article') {
-            //     return new \App\Controller\ArticleAction();
-            // }
+             if ($path === '/article') {
+                 return new \App\Controller\CreateArticleController();
+             }
         }
+//        どれも通らなかったら404のエラーコントローラーを返す
+        return new \App\Controller\ErrorController("404 Not Found", 404);
 
-        return null;
     }
 }
 ?>

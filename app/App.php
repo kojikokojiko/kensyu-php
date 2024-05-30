@@ -2,8 +2,9 @@
 declare(strict_types=1);
 namespace App;
 
+use App\Controller\ErrorController;
 use App\Http\Request;
-use App\Http\Response;
+use Exception;
 
 /**
  * Class App
@@ -22,6 +23,13 @@ class App {
      * @return void
      */
     public function run(): void {
+        // PHPセッション設定の変更
+        ini_set('session.cookie_samesite', 'Lax');
+        //ini_set('session.cookie_secure', 'true'); // HTTPSの場合のみ必要
+        ini_set('session.cookie_httponly', 'true');
+
+        session_start();
+
         $req = new Request(
             $_SERVER['REQUEST_METHOD'],
             $_SERVER['REQUEST_URI'],
@@ -31,19 +39,13 @@ class App {
 
         $controller = Route::getController($req);
         $db = Database::getConnection();
-        if ($controller) {
+        try {
             $res = $controller($req, $db);
-
-            if ($res instanceof Response) {
-                $res->send();
-            } else {
-                http_response_code(500);
-                echo "Invalid response from controller.";
-            }
-        } else {
-            http_response_code(404);
-            echo "Page not found.";
+            $res->send();
+        } catch (Exception $e) {
+            $errorController = new ErrorController('Internal Server Error', 500);
+            $res = $errorController($req, $db);
+            $res->send();
         }
     }
 }
-?>

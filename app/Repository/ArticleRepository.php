@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\Article;
-use App\Repository\RepositoryInterface;
 use PDO;
 
 /**
@@ -48,6 +47,22 @@ class ArticleRepository implements RepositoryInterface {
 
         return $articles;
     }
+
+    /**
+     * Create a new article.
+     *
+     * @param Article $article The article to create.
+     * @return int The ID of the newly created article.
+     */
+    public function createArticle(Article $article): int {
+        $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
+        $stmt->bindValue(':title', $article->title);
+        $stmt->bindValue(':body', $article->body);
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
+    }
+
     // Additional methods for article operations can be uncommented and implemented as needed.
 
     // /**
@@ -55,29 +70,16 @@ class ArticleRepository implements RepositoryInterface {
     //  *
     //  * @param int $id The ID of the article.
     //  * @return array|null The article data or null if not found.
+    //  * @throws RepositoryException If there is an error with the database query.
     //  */
     // public function getArticleById(int $id): ?array {
-    //     $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
-    //     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    //     $stmt->execute();
-    //     return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-    // }
-
-    // /**
-    //  * Create a new article.
-    //  *
-    //  * @param string $title The title of the article.
-    //  * @param string $body The body of the article.
-    //  * @param string $thumbnailPath The path to the thumbnail image.
-    //  * @return int The ID of the newly created article.
-    //  */
-    // public function createArticle(string $title, string $body, string $thumbnailPath): int {
-    //     $stmt = $this->db->prepare("INSERT INTO articles (title, body, thumbnail_image) VALUES (:title, :body, :thumbnail_image) RETURNING id");
-    //     $stmt->bindParam(':title', $title);
-    //     $stmt->bindParam(':body', $body);
-    //     $stmt->bindParam(':thumbnail_image', $thumbnailPath);
-    //     $stmt->execute();
-    //     return $stmt->fetchColumn();
+    //     try {
+    //         $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
+    //         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    //         $stmt->execute();
+    //         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    //     } catch (PDOException $e) {
+    //         throw new RepositoryException("Failed to retrieve article: " . $e->getMessage(), 0, $e);
+    //     }
     // }
 }
-?>

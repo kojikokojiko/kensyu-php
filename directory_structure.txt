@@ -4,15 +4,19 @@
 ├── app
 │   ├── App.php
 │   ├── Controller
-│   │   └── HomeController.php
+│   │   ├── ControllerInterface.php
+│   │   ├── CreateArticleController.php
+│   │   └── TopPageController.php
+│   ├── Database.php
+│   ├── Http
+│   │   ├── Request.php
+│   │   └── Response.php
 │   ├── Model
 │   │   └── Article.php
 │   ├── Repository
 │   │   ├── ArticleRepository.php
 │   │   └── RepositoryInterface.php
 │   ├── Route.php
-│   ├── Service
-│   │   └── Database.php
 │   └── View
 │       └── home.php
 ├── composer.json
@@ -30,28 +34,8 @@
 │       └── init
 │           └── init.sql
 ├── docker-compose.yml
-├── public
-│   ├── index.php
-│   └── styles
-└── src
-    ├── Core
-    │   ├── Domain
-    │   └── UseCase
-    ├── Infrastructure
-    │   ├── Config
-    │   └── Persistence
-    ├── Web
-    │   ├── Controllers
-    │   ├── Public
-    │   │   └── css
-    │   └── Views
-    ├── article.php
-    ├── config.php
-    ├── functions.php
+└── public
     ├── index.php
-    ├── styles
-    │   ├── article.css
-    │   └── index.css
-    └── test.php
+    └── styles
 
-28 directories, 27 files
+15 directories, 24 files

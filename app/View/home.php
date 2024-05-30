@@ -1,9 +1,20 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Article List</title>
 </head>
 <body>
+
+<?php
+
+if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
+    echo '<script>alert("Invalid input: ' . implode(", ", $_SESSION['errors']) . '");</script>';
+    // Clear the errors from session
+    unset($_SESSION['errors']);
+}
+?>
 <h1>Article List</h1>
 
 <!-- New Article Form -->
@@ -42,5 +53,6 @@
 <?php else: ?>
     <p>No articles found.</p>
 <?php endif; ?>
+
 </body>
 </html>
