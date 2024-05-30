@@ -24,7 +24,6 @@ class Route {
         $method = $req->method;
         $uri = $req->uri;
         $path = parse_url($uri, PHP_URL_PATH);
-        $pathParts = explode('/', trim($path, '/'));
 
         if ($method === 'GET') {
             if ($path === '/') {
@@ -34,8 +33,8 @@ class Route {
                 return new \App\Controller\ErrorController();
             }
             // Handle routes like /article/{id}
-            if (count($pathParts) === 2 && $pathParts[0] === 'article') {
-                $articleId = (int) $pathParts[1];
+            if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
+                $articleId = (int) $matches[1];
                 return new \App\Controller\ArticleDetailController($articleId);
             }
         } elseif ($method === 'POST') {
