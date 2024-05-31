@@ -25,6 +25,11 @@ class Route {
         $uri = $req->uri;
         $path = parse_url($uri, PHP_URL_PATH);
 
+        // Check for method override
+        if ($method === 'POST' && isset($req->post['_method'])) {
+            $method = strtoupper($req->post['_method']);
+        }
+
         if ($method === 'GET') {
             if ($path === '/') {
                 return new \App\Controller\TopPageController();
@@ -42,7 +47,14 @@ class Route {
              if ($path === '/article') {
                  return new \App\Controller\CreateArticleController();
              }
+        }elseif($method === 'DELETE') {
+            // Handle routes like /article/{id}
+            if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
+                $articleId = (int) $matches[1];
+                return new \App\Controller\DeleteArticleController($articleId);
+            }
         }
+
 //        どれも通らなかったら404のエラーコントローラーを返す
         return new \App\Controller\ErrorController("404 Not Found", 404);
 

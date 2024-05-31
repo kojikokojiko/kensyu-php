@@ -78,4 +78,19 @@ class ArticleRepository implements RepositoryInterface {
          $stmt->execute();
          return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
      }
+
+    /**
+     * Delete an article by its ID.
+     *
+     * Deletes an article from the database by its ID.
+     *
+     * @param int $id The ID of the article to delete.
+     * @return int The number of rows affected.
+     */
+    public function deleteArticle(int $id): int {
+        $stmt = $this->db->prepare("DELETE FROM articles WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
 }
