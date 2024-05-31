@@ -7,11 +7,29 @@
 </head>
 <body>
 
-<?php
 
-if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
-    echo '<script>alert("Invalid input: ' . implode(", ", $_SESSION['errors']) . '");</script>';
+<?php if (!empty($_SESSION['user_id'])): ?>
+    <form action="/logout" method="POST" style="display:inline;">
+        <button type="submit" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline; padding:0;">
+            Log out
+        </button>
+    </form>
+    <div>Logged in as user ID:<?= htmlspecialchars($_SESSION['user_id'], ENT_QUOTES, 'UTF-8') ?></div>
+<?php else: ?>
+<div class="div">
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+    <div>Not SignedIn</div>
+
+</div>
+
+<?php endif; ?>
+
+<?php
+if (!empty($_SESSION['errors'])) {
+//    echo '<script>alert("Invalid input: ' . implode(", ", $_SESSION['errors']) . '");</script>';
     // Clear the errors from session
+    echo "invalid input";
     unset($_SESSION['errors']);
 }
 ?>
@@ -37,6 +55,7 @@ if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
 
     <button type="submit">Submit</button>
 </form>
+
 
 <!-- Article List -->
 <h2>Articles</h2>

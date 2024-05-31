@@ -32,38 +32,53 @@ class Route {
 
         if ($method === 'GET') {
             if ($path === '/') {
-                return new \App\Controller\TopPageController();
+                return new Controller\Article\TopPageController();
             }
             if ($path === '/error') {
                 return new \App\Controller\ErrorController();
             }
+            if ($path === '/register') {
+                return new Controller\Auth\RegisterPageController();
+            }
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\ArticleDetailController($articleId);
+                return new Controller\Article\ArticleDetailController($articleId);
             }
             // Handle routes like /article/{id}/edit
             if (preg_match('#^/article/(\d+)/edit$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\EditPageController($articleId);
+                return new Controller\Article\EditPageController($articleId);
+            }
+            if ($path === '/login') {
+                return new \App\Controller\Auth\LoginPageController();
             }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
              if ($path === '/article') {
-                 return new \App\Controller\CreateArticleController();
+                 return new Controller\Article\CreateArticleController();
              }
+            if ($path === '/register') {
+                return new Controller\Auth\RegisterController();
+            }
+            if ($path === '/login') {
+                return new \App\Controller\Auth\LoginController();
+            }
+            if ($path === '/logout') {
+                return new \App\Controller\Auth\LogoutController();
+            }
         }elseif($method === 'DELETE') {
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\DeleteArticleController($articleId);
+                return new Controller\Article\DeleteArticleController($articleId);
             }
         }
         elseif($method === 'PUT') {
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\UpdateArticleController($articleId);
+                return new Controller\Article\UpdateArticleController($articleId);
             }
         }
 
