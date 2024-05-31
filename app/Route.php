@@ -42,6 +42,11 @@ class Route {
                 $articleId = (int) $matches[1];
                 return new \App\Controller\ArticleDetailController($articleId);
             }
+            // Handle routes like /article/{id}/edit
+            if (preg_match('#^/article/(\d+)/edit$#', $path, $matches)) {
+                $articleId = (int) $matches[1];
+                return new \App\Controller\EditPageController($articleId);
+            }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
              if ($path === '/article') {
