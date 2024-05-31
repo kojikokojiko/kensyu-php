@@ -11,5 +11,10 @@
 
     <div>Title:<?php echo htmlspecialchars($article->title); ?></div>
     <div>Body:<?php echo htmlspecialchars($article->body); ?></div>
+    <a class="submit-button" href="/">To Home</a>
+
+    <a href="/article/<?= $article->id ?>/edit">Edit</a>
+
+
 </body>
 </html>
