@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
-namespace App\Controller;
+namespace App\Controller\Article;
 
+use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
 use App\Repository\ArticleRepository;
-use PDO;
 use Exception;
+use PDO;
 
 /**
  * Class TopPageController
@@ -33,7 +34,7 @@ class TopPageController implements ControllerInterface {
         $articles = $articleRepository->getAllArticles();
 
         ob_start();
-        include __DIR__ . '/../View/home.php';
+        include __DIR__ . '/../../View/home.php';
         $body = ob_get_clean();
         return new Response(200, $body);
     }
