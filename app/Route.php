@@ -59,6 +59,13 @@ class Route {
                 return new \App\Controller\DeleteArticleController($articleId);
             }
         }
+        elseif($method === 'PUT') {
+            // Handle routes like /article/{id}
+            if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
+                $articleId = (int) $matches[1];
+                return new \App\Controller\UpdateArticleController($articleId);
+            }
+        }
 
 //        どれも通らなかったら404のエラーコントローラーを返す
         return new \App\Controller\ErrorController("404 Not Found", 404);
