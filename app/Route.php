@@ -32,10 +32,11 @@ class Route {
             if ($path === '/error') {
                 return new \App\Controller\ErrorController();
             }
-            // Uncomment and add more GET routes here
-//             if ($path === '/article') {
-//                 return new \App\Controller\ArticleAction();
-//             }
+            // Handle routes like /article/{id}
+            if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
+                $articleId = (int) $matches[1];
+                return new \App\Controller\ArticleDetailController($articleId);
+            }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
              if ($path === '/article') {
