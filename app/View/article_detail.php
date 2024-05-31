@@ -9,7 +9,7 @@
 
 <form action="/article" method="POST" enctype="multipart/form-data">
 
-    <div>Title:<?php echo htmlspecialchars($article['title']); ?></div>
-    <div>Body:<?php echo htmlspecialchars($article['body']); ?></div>
+    <div>Title:<?php echo htmlspecialchars($article->title); ?></div>
+    <div>Body:<?php echo htmlspecialchars($article->body); ?></div>
 </body>
 </html>
