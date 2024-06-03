@@ -96,11 +96,11 @@ class ArticleRepository implements RepositoryInterface {
         return $stmt->rowCount();
     }
 
-    public function updateArticle(string $title, string $body,int $id): int {
+    public function updateArticle(Article $article): int {
         $stmt = $this->db->prepare("UPDATE articles SET title = :title, body = :body WHERE id = :id");
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':body', $body);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':title', $article->title);
+        $stmt->bindValue(':body', $article->body);
+        $stmt->bindValue(':id', $article->id, PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->rowCount();

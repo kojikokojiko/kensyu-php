@@ -30,6 +30,14 @@ class EditPageController implements ControllerInterface {
 
         $article = $articleRepository->getArticleById($this->articleId);
 
+        $userId = $_SESSION['user_id']; // セッションからユーザーIDを取得
+
+        // 編集する記事がログインユーザーのものであるか確認
+        if ($article === null || $article->userId !== $_SESSION['user_id']) {
+            $_SESSION['errors'] = ['他のユーザーの投稿は編集できません。'];
+            return new Response(302, '', ['Location: /']);
+        }
+
         if ($article) {
             ob_start();
             include __DIR__ . '/../../View/edit_page.php';

@@ -36,7 +36,23 @@ class DeleteArticleController implements ControllerInterface {
      * @return Response The HTTP response object.
      */
     public function __invoke(Request $req, PDO $db): Response {
+
+        // ユーザーがログインしていることを確認
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['errors'] = ['ログインが必要です。'];
+            return new Response(302, '', ['Location: /login']);
+        }
+
         $articleRepository = new ArticleRepository($db);
+
+        // 削除対象の記事を取得
+        $article = $articleRepository->getArticleById($this->articleId);
+
+        // 削除する記事がログインユーザーのものであるか確認
+        if ($article === null || $article->userId !== $_SESSION['user_id']) {
+            $_SESSION['errors'] = ['他のユーザーの投稿は削除できません。'];
+            return new Response(302, '', ['Location: /']);
+        }
 
         // Delete the article by its ID.
         $rowsDeleted = $articleRepository->deleteArticle($this->articleId);
