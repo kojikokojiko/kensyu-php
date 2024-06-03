@@ -95,6 +95,16 @@ class ArticleRepository implements RepositoryInterface {
         return $stmt->rowCount();
     }
 
+    /**
+     * Update an article.
+     *
+     * Updates an existing article with the given title and body.
+     *
+     * @param string $title The new title of the article.
+     * @param string $body The new body of the article.
+     * @param int $id The ID of the article to update.
+     * @return int The number of rows affected.
+     */
     public function updateArticle(string $title, string $body,int $id): int {
         $stmt = $this->db->prepare("UPDATE articles SET title = :title, body = :body WHERE id = :id");
         $stmt->bindParam(':title', $title);

@@ -9,9 +9,9 @@ use App\Repository\ArticleRepository;
 use PDO;
 
 /**
- * Class CreateArticleController
+ * Class EditPageController
  *
- * Controller for handling the creation of new articles.
+ * Controller for handling the editing of articles.
  *
  * @package App\Controller
  */
@@ -21,7 +21,13 @@ class EditPageController implements ControllerInterface {
     public function __construct(int $articleId) {
         $this->articleId = $articleId;
     }
+
     /**
+     * Invoke action for the edit page.
+     *
+     * This method fetches the article by its ID, renders the edit page view,
+     * and returns the response.
+     *
      * @param Request $req The HTTP request object.
      * @param PDO $db The database connection object.
      * @return Response The HTTP response object containing the rendered view.

@@ -9,6 +9,13 @@ use App\Repository\ArticleRepository;
 use InvalidArgumentException;
 use PDO;
 
+/**
+ * Class UpdateArticleController
+ *
+ * Controller for handling the updating of articles.
+ *
+ * @package App\Controller
+ */
 class UpdateArticleController implements ControllerInterface {
     private int $articleId;
 
@@ -16,6 +23,16 @@ class UpdateArticleController implements ControllerInterface {
         $this->articleId = $articleId;
     }
 
+    /**
+     * Invoke action for updating an article.
+     *
+     * This method processes the request to update an article, interacts with the repository to save it,
+     * and returns the appropriate response.
+     *
+     * @param Request $req The HTTP request object.
+     * @param PDO $db The database connection object.
+     * @return Response The HTTP response object.
+     */
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
         $title = $req->post['title'];
