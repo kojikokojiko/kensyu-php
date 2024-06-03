@@ -27,12 +27,18 @@ class RegisterController implements ControllerInterface
         $email = $req->post['email'];
         $password = $req->post['password'];
 
+        // メールアドレスの重複をチェック
+        if ($userRepository->emailExists($email)) {
+            $_SESSION['errors'] = ["Email already exists."];
+            return new Response(302, '', ['Location: /register']);
+        }
+
         try{
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
             $user=new User(null,$name,$email,$hashedPassword);
 
             $userId = $userRepository->createUser($user);
-            $_SESSION['user_id'] = $user->id;
+            $_SESSION['user_id'] = $userId;
             $_SESSION['user_name'] = $user->name;
 
             return new Response(302, '', ['Location: /']);

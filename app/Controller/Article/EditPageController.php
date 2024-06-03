@@ -30,21 +30,27 @@ class EditPageController implements ControllerInterface {
 
         $article = $articleRepository->getArticleById($this->articleId);
 
-        $userId = $_SESSION['user_id']; // セッションからユーザーIDを取得
-
-        // 編集する記事がログインユーザーのものであるか確認
-        if ($article === null || $article->userId !== $_SESSION['user_id']) {
-            $_SESSION['errors'] = ['他のユーザーの投稿は編集できません。'];
+        // ユーザーがログインしているかどうかをチェック
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['errors'] = ['ログインが必要です。'];
             return new Response(302, '', ['Location: /']);
         }
 
-        if ($article) {
-            ob_start();
-            include __DIR__ . '/../../View/edit_page.php';
-            $body = ob_get_clean();
-            return new Response(200, $body);
-        } else {
-            return new Response(404, "Article not found");
+        // 記事が見つからない場合のエラーハンドリング
+        if ($article === null) {
+            $_SESSION['errors'] = ['記事が見つかりませんでした。'];
+            return new Response(302, '', ['Location: /']);
         }
+
+        // 編集する記事がログインユーザーのものであるか確認
+        if ($article->userId !== $_SESSION['user_id']) {
+            $_SESSION['errors'] = ['他のユーザーの投稿は編集できません。'];
+            return new Response(302, '', ['Location: /']);
+        }
+        // 記事の編集ページを表示
+        ob_start();
+        include __DIR__ . '/../../View/edit_page.php';
+        $body = ob_get_clean();
+        return new Response(200, $body);
     }
 }

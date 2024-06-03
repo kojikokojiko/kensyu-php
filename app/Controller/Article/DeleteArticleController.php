@@ -40,7 +40,7 @@ class DeleteArticleController implements ControllerInterface {
         // ユーザーがログインしていることを確認
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['errors'] = ['ログインが必要です。'];
-            return new Response(302, '', ['Location: /login']);
+            return new Response(302, '', ['Location: /']);
         }
 
         $articleRepository = new ArticleRepository($db);

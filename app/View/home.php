@@ -27,12 +27,20 @@
 
 <?php
 if (!empty($_SESSION['errors'])) {
-//    echo '<script>alert("Invalid input: ' . implode(", ", $_SESSION['errors']) . '");</script>';
-    // Clear the errors from session
-    echo "invalid input";
-    unset($_SESSION['errors']);
+    $errors = $_SESSION['errors'];
+    unset($_SESSION['errors']); // エラーメッセージをクリア
 }
 ?>
+
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach ($errors as $error): ?>
+                <li><?= htmlspecialchars($error) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
 <h1>Article List</h1>
 
 <!-- New Article Form -->

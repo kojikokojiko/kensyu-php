@@ -5,6 +5,14 @@
 </head>
 <body>
 <h1>Register</h1>
+
+<?php
+if (!empty($_SESSION['errors'])) {
+    $errors = $_SESSION['errors'];
+    unset($_SESSION['errors']); // エラーメッセージをクリア
+}
+?>
+
 <?php if (!empty($errors)): ?>
     <div class="alert alert-danger">
         <ul>
