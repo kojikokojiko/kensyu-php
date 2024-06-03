@@ -2,10 +2,11 @@ CREATE TABLE articles (
     id SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL,
     body TEXT NOT NULL,
-    -- user_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 
