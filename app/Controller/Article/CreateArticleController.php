@@ -29,14 +29,22 @@ class CreateArticleController implements ControllerInterface {
      * @return Response The HTTP response object.
      */
     public function __invoke(Request $req, PDO $db): Response {
+
         $articleRepository = new ArticleRepository($db);
-
-
         $title = $req->post['title'];
         $body = $req->post['body'];
+        $userId = $_SESSION['user_id']; // セッションからユーザーIDを取得
+
+
+        // ユーザーがログインしていることを確認
+        if (!$userId) {
+            $_SESSION['errors'] = ['ログインが必要です。'];
+            return new Response(302, '', ['Location: /login']);
+        }
+
 
         try{
-            $article= new Article(null,$title, $body);
+            $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
             // Redirect to the home page after successful creation
             return new Response(302, '', ['Location: /']);
