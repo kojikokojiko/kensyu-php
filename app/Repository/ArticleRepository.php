@@ -103,6 +103,24 @@ class ArticleRepository implements RepositoryInterface {
         return $data ? new Article($data['id'], $data['title'], $data['body'], $data['user_id']) : null;
     }
 
+
+    public function getArticleByIdWithUser(int $id): ?array {
+        $stmt = $this->db->prepare("
+            SELECT a.*, u.name as user_name 
+            FROM articles a 
+            JOIN users u ON a.user_id = u.id
+            WHERE a.id = :id
+        ");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $data ?
+            [
+            'article' => new Article($data['id'], $data['title'], $data['body'], $data['user_id']),
+            'user_name' => $data['user_name']
+            ] : null;
+    }
     /**
      * Delete an article by its ID.
      *

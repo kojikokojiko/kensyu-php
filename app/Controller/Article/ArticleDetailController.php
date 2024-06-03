@@ -37,9 +37,9 @@ class ArticleDetailController implements ControllerInterface
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
 
-        $article = $articleRepository->getArticleById($this->articleId);
+        $articleData = $articleRepository->getArticleByIdWithUser($this->articleId);
 
-        if ($article) {
+        if ($articleData) {
             ob_start();
             include __DIR__ . '/../../View/article_detail.php';
             $body = ob_get_clean();
