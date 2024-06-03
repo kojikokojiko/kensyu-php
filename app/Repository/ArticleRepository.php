@@ -16,7 +16,7 @@ class ArticleRepository implements RepositoryInterface {
     /**
      * @var PDO The PDO instance for database connection.
      */
-    private $db;
+    private PDO $db;
 
     /**
      * ArticleRepository constructor.
@@ -42,7 +42,7 @@ class ArticleRepository implements RepositoryInterface {
 
         $articles = [];
         foreach ($articlesData as $data) {
-            $articles[] = new Article($data['id'], $data['title'], $data['body']);
+            $articles[] = new Article($data['id'], $data['title'], $data['body'],$data['user_id']);
         }
 
         return $articles;
@@ -55,9 +55,10 @@ class ArticleRepository implements RepositoryInterface {
      * @return int The ID of the newly created article.
      */
     public function createArticle(Article $article): int {
-        $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
+        $stmt = $this->db->prepare("INSERT INTO articles (title, body, user_id) VALUES (:title, :body, :user_id) RETURNING id");
         $stmt->bindValue(':title', $article->title);
         $stmt->bindValue(':body', $article->body);
+        $stmt->bindValue(':user_id', $article->userId);
         $stmt->execute();
 
         return (int) $stmt->fetchColumn();
@@ -77,7 +78,7 @@ class ArticleRepository implements RepositoryInterface {
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? new Article($data['id'], $data['title'], $data['body']) : null;
+        return $data ? new Article($data['id'], $data['title'], $data['body'], $data['user_id']) : null;
     }
 
     /**

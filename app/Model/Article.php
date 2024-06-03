@@ -21,11 +21,13 @@ readonly class Article {
      * @param ?int $id The ID of the article, can be null.
      * @param string $title The title of the article.
      * @param string $body The body of the article.
+     * @param int $userId The ID of the user who created the article.
      */
     public function __construct(
         public ?int $id,
         public string $title,
         public string $body,
+        public int $userId,
     ){
         $errors = $this->validate();
         if (!empty($errors)) {
