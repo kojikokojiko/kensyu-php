@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Repository;
 
+use App\Dto\ArticleWithUserDto;
 use App\Model\Article;
 use PDO;
 
@@ -48,9 +49,17 @@ class ArticleRepository implements RepositoryInterface {
         return $articles;
     }
 
+
+    /**
+     * Get all articles with user information.
+     *
+     * Retrieves all articles from the database along with their associated user information.
+     *
+     * @return ArticleWithUserDTO[] An array of ArticleWithUserDTO objects.
+     */
     public function getAllArticlesWithUser(): array {
         $stmt = $this->db->query("
-            SELECT a.*, u.name as user_name 
+            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name 
             FROM articles a 
             JOIN users u ON a.user_id = u.id
         ");
@@ -58,10 +67,7 @@ class ArticleRepository implements RepositoryInterface {
 
         $articles = [];
         foreach ($articlesData as $data) {
-            $articles[] = [
-                'article' => new Article($data['id'], $data['title'], $data['body'], $data['user_id']),
-                'user_name' => $data['user_name']
-            ];
+            $articles[] = new ArticleWithUserDTO($data['article_id'], $data['title'], $data['body'], $data['user_id'], $data['user_name']);
         }
 
         return $articles;
@@ -103,10 +109,15 @@ class ArticleRepository implements RepositoryInterface {
         return $data ? new Article($data['id'], $data['title'], $data['body'], $data['user_id']) : null;
     }
 
-
-    public function getArticleByIdWithUser(int $id): ?array {
+    /**
+     * Get an article by its ID with user information.
+     *
+     * @param int $id The ID of the article.
+     * @return ArticleWithUserDTO|null The article with user information DTO or null if not found.
+     */
+    public function getArticleByIdWithUser(int $id): ?ArticleWithUserDTO {
         $stmt = $this->db->prepare("
-            SELECT a.*, u.name as user_name 
+            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name 
             FROM articles a 
             JOIN users u ON a.user_id = u.id
             WHERE a.id = :id
@@ -115,11 +126,7 @@ class ArticleRepository implements RepositoryInterface {
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ?
-            [
-            'article' => new Article($data['id'], $data['title'], $data['body'], $data['user_id']),
-            'user_name' => $data['user_name']
-            ] : null;
+        return $data ? new ArticleWithUserDTO($data['article_id'], $data['title'], $data['body'], $data['user_id'], $data['user_name']) : null;
     }
     /**
      * Delete an article by its ID.

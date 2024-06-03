@@ -9,13 +9,13 @@
 
 <form action="/article" method="POST" enctype="multipart/form-data">
 
-    <div>Title:<?php echo htmlspecialchars($articleData['article']->title); ?></div>
-    <div>Body:<?php echo htmlspecialchars($articleData['article']->body); ?></div>
-    <div>Created by:<?php echo htmlspecialchars($articleData['user_name']); ?></div>
+    <div>Title:<?php echo htmlspecialchars($articleDTO->title); ?></div>
+    <div>Body:<?php echo htmlspecialchars($articleDTO->body); ?></div>
+    <div>Created by:<?php echo htmlspecialchars($articleDTO->userName); ?></div>
 
     <a class="submit-button" href="/">To Home</a>
 
-    <a href="/article/<?= $articleData['article']->id ?>/edit">Edit</a>
+    <a href="/article/<?= $articleDTO->id ?>/edit">Edit</a>
 
 
 </body>
