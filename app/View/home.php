@@ -69,13 +69,15 @@ if (!empty($_SESSION['errors'])) {
 <h2>Articles</h2>
 <?php if (!empty($articles)): ?>
     <ul>
-        <?php foreach ($articles as $article): ?>
+        <?php foreach ($articles as $item): ?>
             <li>
-                <h2><?= htmlspecialchars($article->title, ENT_QUOTES, 'UTF-8') ?></h2>
-                <p><?= nl2br(htmlspecialchars($article->body, ENT_QUOTES, 'UTF-8')) ?></p>
-                <a href="/article/<?= $article->id ?>">Read more</a>
-                <a href="/article/<?= $article->id ?>/edit">Edit</a>
-                <form action="/article/<?= $article->id ?>" method="POST">
+                <h2><?= htmlspecialchars($item['article']->title, ENT_QUOTES, 'UTF-8') ?></h2>
+                <p><?= nl2br(htmlspecialchars($item['article']->body, ENT_QUOTES, 'UTF-8')) ?></p>
+                <p>Written by: <?= htmlspecialchars($item['user_name']) ?></p>
+                <p>WritterID: <?= htmlspecialchars($item['article']->userId) ?></p>
+                <a href="/article/<?= $item['article']->id ?>">Read more</a>
+                <a href="/article/<?= $item['article']->id ?>/edit">Edit</a>
+                <form action="/article/<?= $item['article']->id ?>" method="POST">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit">Delete Article</button>
                 </form>
