@@ -43,8 +43,8 @@ class UpdateArticleController implements ControllerInterface
 		$body = $req->post['body'];
 
 		try {
-			$article = new Article(null, $title, $body);
-			$rowsUpdated = $articleRepository->updateArticle($title, $body, $this->articleId);
+			$article = new Article($this->articleId, $title, $body);
+			$articleRepository->updateArticle($article);
 			return new Response(302, '', ['Location: /article/' . $this->articleId]);
 
 		} catch (InvalidArgumentException $e) {
