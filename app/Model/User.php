@@ -102,12 +102,15 @@ readonly class User
     {
         $errors = [];
 
-        if (trim($password) === '') {
-            $errors[] = "Password is required.";
-        } elseif (strlen($password) < 6) {
-            $errors[] = "Password must be at least 6 characters.";
-        }
 
+        if (strlen($password) < 8 ||
+            !preg_match('/[A-Z]/', $password) ||
+            !preg_match('/[a-z]/', $password) ||
+            !preg_match('/[0-9]/', $password) ||
+            !preg_match('/[^\w]/', $password))
+        {
+            $errors[] = "Password must be at least 8 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters.";
+        }
         return $errors;
     }
 }
