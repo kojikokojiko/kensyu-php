@@ -42,6 +42,9 @@ class Route {
                 $articleId = (int) $matches[1];
                 return new \App\Controller\ArticleDetailController($articleId);
             }
+            if ($path === '/register') {
+                return new Controller\Auth\RegisterPageController();
+            }
             // Handle routes like /article/{id}/edit
             if (preg_match('#^/article/(\d+)/edit$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
@@ -52,6 +55,9 @@ class Route {
              if ($path === '/article') {
                  return new \App\Controller\CreateArticleController();
              }
+            if ($path === '/register') {
+                return new Controller\Auth\RegisterController();
+            }
         }elseif($method === 'DELETE') {
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
