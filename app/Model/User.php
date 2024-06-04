@@ -107,8 +107,7 @@ readonly class User
             !preg_match('/[A-Z]/', $password) ||
             !preg_match('/[a-z]/', $password) ||
             !preg_match('/[0-9]/', $password) ||
-            !preg_match('/[^\w]/', $password))
-        {
+            !preg_match('/[^\w]/', $password)) {
             $errors[] = "Password must be at least 8 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters.";
         }
         return $errors;
