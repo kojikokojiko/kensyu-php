@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Model\Article;
@@ -12,7 +13,8 @@ use PDO;
  *
  * @package App\Repository
  */
-class ArticleRepository implements RepositoryInterface {
+class ArticleRepository implements RepositoryInterface
+{
     /**
      * @var PDO The PDO instance for database connection.
      */
@@ -25,7 +27,8 @@ class ArticleRepository implements RepositoryInterface {
      *
      * @param PDO $db The PDO instance for database connection.
      */
-    public function __construct(PDO $db) {
+    public function __construct(PDO $db)
+    {
         $this->db = $db;
     }
 
@@ -36,7 +39,8 @@ class ArticleRepository implements RepositoryInterface {
      *
      * @return Article[] An array of Article objects.
      */
-    public function getAllArticles(): array {
+    public function getAllArticles(): array
+    {
         $stmt = $this->db->query("SELECT * FROM articles");
         $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -54,13 +58,14 @@ class ArticleRepository implements RepositoryInterface {
      * @param Article $article The article to create.
      * @return int The ID of the newly created article.
      */
-    public function createArticle(Article $article): int {
+    public function createArticle(Article $article): int
+    {
         $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
         $stmt->bindValue(':title', $article->title);
         $stmt->bindValue(':body', $article->body);
         $stmt->execute();
 
-        return (int) $stmt->fetchColumn();
+        return (int)$stmt->fetchColumn();
     }
 
     // Additional methods for article operations can be uncommented and implemented as needed.
@@ -71,7 +76,8 @@ class ArticleRepository implements RepositoryInterface {
      * @param int $id The ID of the article.
      * @return Article|null The article object or null if not found.
      */
-    public function getArticleById(int $id): ?Article {
+    public function getArticleById(int $id): ?Article
+    {
         $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -88,7 +94,8 @@ class ArticleRepository implements RepositoryInterface {
      * @param int $id The ID of the article to delete.
      * @return int The number of rows affected.
      */
-    public function deleteArticle(int $id): int {
+    public function deleteArticle(int $id): int
+    {
         $stmt = $this->db->prepare("DELETE FROM articles WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -98,20 +105,17 @@ class ArticleRepository implements RepositoryInterface {
     /**
      * Update an article.
      *
-     * Updates an existing article with the given title and body.
+     * Updates an existing article in the database.
      *
-     * @param string $title The new title of the article.
-     * @param string $body The new body of the article.
-     * @param int $id The ID of the article to update.
-     * @return int The number of rows affected.
+     * @param Article $article The article to update.
      */
-    public function updateArticle(string $title, string $body,int $id): int {
+    public function updateArticle(Article $article): void
+    {
         $stmt = $this->db->prepare("UPDATE articles SET title = :title, body = :body WHERE id = :id");
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':body', $body);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':title', $article->title);
+        $stmt->bindValue(':body', $article->body);
+        $stmt->bindValue(':id', $article->id, PDO::PARAM_INT);
 
         $stmt->execute();
-        return $stmt->rowCount();
     }
 }
