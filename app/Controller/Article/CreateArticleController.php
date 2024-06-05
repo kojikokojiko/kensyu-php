@@ -7,6 +7,8 @@ use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
+use App\Repository\ThumbnailRepository;
+use App\Utils\FileUploader;
 use InvalidArgumentException;
 use PDO;
 
@@ -33,10 +35,12 @@ class CreateArticleController implements ControllerInterface {
 
         $articleRepository = new ArticleRepository($db);
         $articleCategoryRepository=new ArticleCategoryRepository($db);
+        $thumbnailRepository = new ThumbnailRepository($db);
+
         $title = $req->post['title'];
         $body = $req->post['body'];
         $categoryIds=$req->post['categoryIds'];
-
+        $thumbnail = $req->files['thumbnails']; // ファイルを取得
 
         // ユーザーがログインしていることを確認
         if (!isset($_SESSION['user_id'])) {
@@ -47,6 +51,7 @@ class CreateArticleController implements ControllerInterface {
         $userId = $_SESSION['user_id'];
 
         try{
+            $thumbnailPath = FileUploader::saveFile($thumbnail, 'thumbnails');
 
             $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
@@ -55,6 +60,8 @@ class CreateArticleController implements ControllerInterface {
                 $articleCategoryRepository->createArticleCategory($articleId,(int)$categoryId);
             }
 
+            // サムネイル情報の保存
+            $thumbnailRepository->createThumbnail($articleId, $thumbnailPath);
 
             // Redirect to the home page after successful creation
             return new Response(302, '', ['Location: /']);

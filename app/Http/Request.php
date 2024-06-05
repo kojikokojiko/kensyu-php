@@ -9,7 +9,8 @@ namespace App\Http;
  *
  * @package App\Http
  */
-readonly class Request {
+readonly class Request
+{
     /**
      * Request constructor.
      *
@@ -19,13 +20,18 @@ readonly class Request {
      * @param string $uri The URI of the request.
      * @param array $get The query parameters of the request.
      * @param array $post The post parameters of the request.
+     * @param array $files The uploaded files of the request.
      */
     public function __construct(
         public string $method,
         public string $uri,
         public array  $get,
-        public array  $post
-    ) {}
+        public array  $post,
+        public array  $files
+    )
+    {
+    }
 
 }
+
 ?>

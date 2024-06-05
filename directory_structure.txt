@@ -4,21 +4,48 @@
 ├── app
 │   ├── App.php
 │   ├── Controller
+│   │   ├── Article
+│   │   │   ├── ArticleDetailController.php
+│   │   │   ├── CreateArticleController.php
+│   │   │   ├── DeleteArticleController.php
+│   │   │   ├── EditPageController.php
+│   │   │   ├── TopPageController.php
+│   │   │   └── UpdateArticleController.php
+│   │   ├── Auth
+│   │   │   ├── LoginController.php
+│   │   │   ├── LoginPageController.php
+│   │   │   ├── LogoutController.php
+│   │   │   ├── RegisterController.php
+│   │   │   └── RegisterPageController.php
 │   │   ├── ControllerInterface.php
-│   │   ├── CreateArticleController.php
-│   │   └── TopPageController.php
+│   │   └── ErrorController.php
 │   ├── Database.php
+│   ├── Dto
+│   │   ├── ArticleWithUserAndTagsDto.php
+│   │   └── ArticleWithUserDto.php
+│   ├── Exceptions
 │   ├── Http
 │   │   ├── Request.php
 │   │   └── Response.php
 │   ├── Model
-│   │   └── Article.php
+│   │   ├── Article.php
+│   │   ├── Category.php
+│   │   └── User.php
 │   ├── Repository
+│   │   ├── ArticleCategoryRepository.php
 │   │   ├── ArticleRepository.php
-│   │   └── RepositoryInterface.php
+│   │   ├── CategoryRepository.php
+│   │   ├── RepositoryInterface.php
+│   │   └── UserRepository.php
 │   ├── Route.php
+│   ├── Utils
+│   │   └── FileUploader.php
 │   └── View
-│       └── home.php
+│       ├── article_detail.php
+│       ├── edit_page.php
+│       ├── home.php
+│       ├── login.php
+│       └── register.php
 ├── composer.json
 ├── composer.lock
 ├── directory_structure.txt
@@ -38,4 +65,4 @@
     ├── index.php
     └── styles
 
-15 directories, 24 files
+20 directories, 46 files

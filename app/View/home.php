@@ -52,11 +52,12 @@ if (!empty($_SESSION['errors'])) {
 
     <label for="body">Body:</label><br>
     <textarea id="body" name="body" required></textarea><br><br>
-<!---->
-<!--    <label for="thumbnail">Thumbnail Image:</label><br>-->
-<!--    <input type="file" id="thumbnail" name="thumbnail" required><br><br>-->
-<!---->
-<!--    <label for="images">Additional Images:</label><br>-->
+
+    <label for="thumbnail">Thumbnail:</label><br>
+    <input type="file" id="thumbnails" name="thumbnails" accept="image/*" required><br><br>
+
+
+    <!--    <label for="images">Additional Images:</label><br>-->
 <!--    <input type="file" id="images" name="images[]" multiple><br><br>-->
 <!---->
 <!--    <label for="tags">Tags (comma-separated):</label><br>-->
@@ -87,6 +88,9 @@ if (!empty($_SESSION['errors'])) {
         <?php foreach ($articlesWithUsers as $article): ?>
             <li>
                 <h2><?= htmlspecialchars($article->title, ENT_QUOTES, 'UTF-8') ?></h2>
+                <?php if (!empty($article->thumbnailPath)): ?>
+                    <img src="<?= htmlspecialchars($article->thumbnailPath, ENT_QUOTES, 'UTF-8') ?>" alt="Thumbnail" style="width:100px;height:100px;">
+                <?php endif; ?>
                 <p><?= nl2br(htmlspecialchars($article->body, ENT_QUOTES, 'UTF-8')) ?></p>
                 <p>Written by: <?= htmlspecialchars($article->userName) ?></p>
                 <p>WritterID: <?= htmlspecialchars($article->userId) ?></p>

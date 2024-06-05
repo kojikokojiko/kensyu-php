@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Dto\ArticleWithUserAndTagsDto;
+use App\Dto\ArticleWithUserAndThumbnailDTO;
 use App\Dto\ArticleWithUserDto;
 use App\Model\Article;
 use PDO;
@@ -74,6 +75,34 @@ class ArticleRepository implements RepositoryInterface {
         return $articles;
     }
 
+    /**
+     * Get all articles with user and thumbnail information.
+     *
+     * @return array
+     */
+    public function getAllArticlesWithUserAndThumbnail(): array {
+        $stmt = $this->db->query("
+            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name, t.path as thumbnail_path
+            FROM articles a
+            JOIN users u ON a.user_id = u.id
+            LEFT JOIN thumbnails t ON a.id = t.article_id
+        ");
+        $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $articles = [];
+        foreach ($articlesData as $data) {
+            $articles[] = new ArticleWithUserAndThumbnailDTO(
+                $data['article_id'],
+                $data['title'],
+                $data['body'],
+                $data['user_id'],
+                $data['user_name'],
+                $data['thumbnail_path'] ?? null // サムネイルが存在しない場合はnullを設定
+            );
+        }
+
+        return $articles;
+    }
 
 
 
