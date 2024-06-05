@@ -64,7 +64,7 @@ class UserRepository implements RepositoryInterface
         return null;
     }
 
-    public function emailExists(string $email): bool
+    public function existsByEmail(string $email): bool
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
         $stmt->bindValue(':email', $email);
