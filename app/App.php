@@ -43,7 +43,7 @@ class App {
             $res = $controller($req, $db);
             $res->send();
         } catch (Exception $e) {
-            $errorController = new ErrorController('Internal Server Error', 500);
+            $errorController = new ErrorController('Internal Server Error:'.$e, 500);
             $res = $errorController($req, $db);
             $res->send();
         }

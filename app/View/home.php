@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Article List</title>
+
 </head>
 <body>
 
@@ -60,6 +61,20 @@ if (!empty($_SESSION['errors'])) {
 <!---->
 <!--    <label for="tags">Tags (comma-separated):</label><br>-->
 <!--    <input type="text" id="tags" name="tags"><br><br>-->
+    <?php if (!empty($categories)): ?>
+
+
+        <?php foreach ($categories as $category): ?>
+            <ul style="list-style-type: none;">
+
+                <li>
+                    <input type="checkbox" id="categoryIds" name="categoryIds[]" value="<?= $category->id ?>"><?= $category->name ?>
+                </li>
+            </ul>
+        <?php endforeach; ?>
+
+    <?php endif; ?>
+
 
     <button type="submit">Submit</button>
 </form>
@@ -75,9 +90,9 @@ if (!empty($_SESSION['errors'])) {
                 <p><?= nl2br(htmlspecialchars($article->body, ENT_QUOTES, 'UTF-8')) ?></p>
                 <p>Written by: <?= htmlspecialchars($article->userName) ?></p>
                 <p>WritterID: <?= htmlspecialchars($article->userId) ?></p>
-                <a href="/article/<?= $article->id ?>">Read more</a>
-                <a href="/article/<?= $article->id ?>/edit">Edit</a>
-                <form action="/article/<?= $article->id ?>" method="POST">
+                <a href="/article/<?= $article->articleId ?>">Read more</a>
+                <a href="/article/<?= $article->articleId ?>/edit">Edit</a>
+                <form action="/article/<?= $article->articleId ?>" method="POST">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit">Delete Article</button>
                 </form>
@@ -90,3 +105,6 @@ if (!empty($_SESSION['errors'])) {
 
 </body>
 </html>
+
+
+<!--http://localhost/article/%3Cbr%20/%3E%3Cb%3EWarning%3C/b%3E:%20%20Undefined%20property:%20App/Dto/ArticleWithUserDto::$id%20in%20%3Cb%3E/var/www/html/app/View/home.php%3C/b%3E%20on%20line%20%3Cb%3E98%3C/b%3E%3Cbr%20/%3E-->

@@ -1,10 +1,14 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Controller\Article;
+
 use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
+use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use PDO;
 
 /**
@@ -14,21 +18,31 @@ use PDO;
  *
  * @package App\Controller
  */
-class EditPageController implements ControllerInterface {
+class EditPageController implements ControllerInterface
+{
     private int $articleId;
 
-    public function __construct(int $articleId) {
+    public function __construct(int $articleId)
+    {
         $this->articleId = $articleId;
     }
+
     /**
      * @param Request $req The HTTP request object.
      * @param PDO $db The database connection object.
      * @return Response The HTTP response object containing the rendered view.
      */
-    public function __invoke(Request $req, PDO $db): Response {
+    public function __invoke(Request $req, PDO $db): Response
+    {
         $articleRepository = new ArticleRepository($db);
-
         $article = $articleRepository->getArticleById($this->articleId);
+
+        $categoryRepository = new CategoryRepository($db);
+        $categories = $categoryRepository->getAllCategories();
+
+        $articleCategoryRepository = new ArticleCategoryRepository($db);
+        $existingCategoryIds = $articleCategoryRepository->getCategoriesByArticleId($this->articleId);
+
 
         // ユーザーがログインしているかどうかをチェック
         if (!isset($_SESSION['user_id'])) {

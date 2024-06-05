@@ -9,13 +9,13 @@ namespace App\Dto;
  *
  * @package App\DTO
  */
-class ArticleWithUserDto {
+class ArticleWithUserAndTagsDto {
     public function __construct(
         public int $articleId,
         public string $title,
         public string $body,
         public int $userId,
         public string $userName,
-//        public array $tags
+        public array $categories
     ) {}
 }

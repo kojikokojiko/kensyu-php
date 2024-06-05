@@ -5,6 +5,7 @@ use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
+use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
 use InvalidArgumentException;
 use PDO;
@@ -31,21 +32,30 @@ class CreateArticleController implements ControllerInterface {
     public function __invoke(Request $req, PDO $db): Response {
 
         $articleRepository = new ArticleRepository($db);
+        $articleCategoryRepository=new ArticleCategoryRepository($db);
         $title = $req->post['title'];
         $body = $req->post['body'];
-        $userId = $_SESSION['user_id']; // セッションからユーザーIDを取得
+        $categoryIds=$req->post['categoryIds'];
 
 
         // ユーザーがログインしていることを確認
-        if (!$userId) {
+        if (!isset($_SESSION['user_id'])) {
             $_SESSION['errors'] = ['ログインが必要です。'];
             return new Response(302, '', ['Location: /login']);
         }
 
+        $userId = $_SESSION['user_id'];
 
         try{
+
             $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
+
+            foreach ($categoryIds as $categoryId){
+                $articleCategoryRepository->createArticleCategory($articleId,(int)$categoryId);
+            }
+
+
             // Redirect to the home page after successful creation
             return new Response(302, '', ['Location: /']);
 
