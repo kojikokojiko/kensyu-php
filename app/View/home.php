@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,14 +5,41 @@
 </head>
 <body>
 
-<?php
+<?php if (!empty($_SESSION['user_id'])): ?>
+    <form action="/logout" method="POST" style="display:inline;">
+        <button type="submit"
+                style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline; padding:0;">
+            Log out
+        </button>
+    </form>
+    <div>Logged in as user ID:<?= htmlspecialchars($_SESSION['user_id'], ENT_QUOTES, 'UTF-8') ?></div>
+<?php else: ?>
+    <div class="div">
+<!--        <a href="/login">Login</a>-->
+        <a href="/register">Register</a>
+        <div>Not SignedIn</div>
 
-if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
-    echo '<script>alert("Invalid input: ' . implode(", ", $_SESSION['errors']) . '");</script>';
-    // Clear the errors from session
-    unset($_SESSION['errors']);
+    </div>
+<?php endif; ?>
+
+<?php
+if (!empty($_SESSION['errors'])) {
+    $errors = $_SESSION['errors'];
+    unset($_SESSION['errors']); // エラーメッセージをクリア
 }
 ?>
+
+
+
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach ($errors as $error): ?>
+                <li><?= htmlspecialchars($error) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
 <h1>Article List</h1>
 
 <!-- New Article Form -->
@@ -25,15 +50,15 @@ if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
 
     <label for="body">Body:</label><br>
     <textarea id="body" name="body" required></textarea><br><br>
-<!---->
-<!--    <label for="thumbnail">Thumbnail Image:</label><br>-->
-<!--    <input type="file" id="thumbnail" name="thumbnail" required><br><br>-->
-<!---->
-<!--    <label for="images">Additional Images:</label><br>-->
-<!--    <input type="file" id="images" name="images[]" multiple><br><br>-->
-<!---->
-<!--    <label for="tags">Tags (comma-separated):</label><br>-->
-<!--    <input type="text" id="tags" name="tags"><br><br>-->
+    <!---->
+    <!--    <label for="thumbnail">Thumbnail Image:</label><br>-->
+    <!--    <input type="file" id="thumbnail" name="thumbnail" required><br><br>-->
+    <!---->
+    <!--    <label for="images">Additional Images:</label><br>-->
+    <!--    <input type="file" id="images" name="images[]" multiple><br><br>-->
+    <!---->
+    <!--    <label for="tags">Tags (comma-separated):</label><br>-->
+    <!--    <input type="text" id="tags" name="tags"><br><br>-->
 
     <button type="submit">Submit</button>
 </form>
