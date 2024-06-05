@@ -45,6 +45,9 @@ class Route {
             if ($path === '/register') {
                 return new Controller\Auth\GetRegisterPageController();
             }
+            if ($path === '/login') {
+                return new \App\Controller\Auth\GetLoginPageController();
+            }
             // Handle routes like /article/{id}/edit
             if (preg_match('#^/article/(\d+)/edit$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
@@ -57,6 +60,12 @@ class Route {
              }
             if ($path === '/register') {
                 return new Controller\Auth\RegisterController();
+            }
+            if ($path === '/login') {
+                return new \App\Controller\Auth\LoginController();
+            }
+            if ($path === '/logout') {
+                return new \App\Controller\Auth\LogoutController();
             }
         }elseif($method === 'DELETE') {
             // Handle routes like /article/{id}

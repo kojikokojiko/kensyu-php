@@ -14,7 +14,7 @@ class GetLoginPageController implements ControllerInterface
     public function __invoke(Request $req, PDO $db): Response
     {
         ob_start();
-        include __DIR__ . '/../../View/register.php';
+        include __DIR__ . '/../../View/login.php';
         $body = ob_get_clean();
         return new Response(200, $body);
     }
