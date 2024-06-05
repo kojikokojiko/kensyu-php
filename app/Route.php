@@ -43,7 +43,7 @@ class Route {
                 return new \App\Controller\ArticleDetailController($articleId);
             }
             if ($path === '/register') {
-                return new Controller\Auth\RegisterPageController();
+                return new Controller\Auth\GetRegisterPageController();
             }
             // Handle routes like /article/{id}/edit
             if (preg_match('#^/article/(\d+)/edit$#', $path, $matches)) {

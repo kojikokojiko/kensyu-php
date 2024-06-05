@@ -7,7 +7,7 @@ use App\Http\Request;
 use App\Http\Response;
 use PDO;
 
-class RegisterPageController implements ControllerInterface
+class GetRegisterPageController implements ControllerInterface
 {
 
     public function __invoke(Request $req, PDO $db): Response
