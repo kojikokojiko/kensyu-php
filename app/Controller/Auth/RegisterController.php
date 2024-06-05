@@ -34,13 +34,8 @@ class RegisterController implements ControllerInterface
         }
 
         try {
-            // まずはプレーンテキストのパスワードを検証
-            $temp_user = new User(null, $name, $email, $password);
-
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-            // ハッシュ化したパスワードで再度ユーザーオブジェクトを生成
-            $user = new User(null, $name, $email, $hashedPassword);
+            // ユーザーを作成→ハッシュ化
+            $user = (new User(null, $name, $email, $password))->toHashedPassword();
 
             $userId = $userRepository->createUser($user);
             $_SESSION['user_id'] = $userId;

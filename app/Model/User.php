@@ -36,6 +36,22 @@ readonly class User
         if (!empty($errors)) {
             throw new InvalidArgumentException(implode(', ', $errors));
         }
+
+    }
+
+    /**
+     * Returns a new User instance with the password hashed.
+     *
+     * @return User The new User instance with the hashed password.
+     */
+    public function toHashedPassword(): self
+    {
+        return new self(
+            $this->id,
+            $this->name,
+            $this->email,
+            password_hash($this->password, PASSWORD_DEFAULT)
+        );
     }
 
     /**
@@ -112,6 +128,7 @@ readonly class User
         }
         return $errors;
     }
+
 }
 
 ?>
