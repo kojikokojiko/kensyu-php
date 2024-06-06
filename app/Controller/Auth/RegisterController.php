@@ -10,6 +10,7 @@ use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
 use App\ValueObject\Email;
 use App\ValueObject\Password;
+use App\ValueObject\UserName;
 use InvalidArgumentException;
 use PDO;
 
@@ -32,12 +33,13 @@ class RegisterController implements ControllerInterface
     public function __invoke(Request $req, PDO $db): Response
     {
         $userRepository = new UserRepository($db);
-        $name = trim($req->post['name']);
+        $nameInput = trim($req->post['name']);
         $emailInput = trim($req->post['email']);
         $passwordInput = trim($req->post['password']);
 
         try {
             // バリューオブジェクトのバリデーション
+            $name = new UserName($nameInput);
             $email = new Email($emailInput);
             $password = new Password($passwordInput);
 
