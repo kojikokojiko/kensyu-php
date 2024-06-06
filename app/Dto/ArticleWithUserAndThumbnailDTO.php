@@ -11,6 +11,7 @@ class ArticleWithUserAndThumbnailDTO
         public string  $body,
         public int     $userId,
         public string  $userName,
+        public array   $categories,
         public ?string $thumbnailPath // サムネイルパスは存在しない場合もあるのでnullableにする
     )
     {

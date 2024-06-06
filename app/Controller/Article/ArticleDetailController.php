@@ -38,7 +38,7 @@ class ArticleDetailController implements ControllerInterface
         $articleRepository = new ArticleRepository($db);
 
         // getArticleByIdWithUserメソッドを使用して記事とユーザー情報を取得
-        $articleWithUser = $articleRepository->getArticleByIdWithUser($this->articleId);
+        $articleWithUser = $articleRepository->getArticleByIdWithUserAndThumbnail($this->articleId);
         if ($articleWithUser) {
             ob_start();
             include __DIR__ . '/../../View/article_detail.php';
