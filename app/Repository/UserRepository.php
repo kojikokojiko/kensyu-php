@@ -7,6 +7,8 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Model\User;
+use App\ValueObject\Email;
+use App\ValueObject\Password;
 use PDO;
 
 /**
@@ -39,17 +41,17 @@ class UserRepository implements RepositoryInterface
     {
         $stmt = $this->db->prepare('INSERT INTO users (name, email, password) VALUES (:name, :email, :password) RETURNING id');
         $stmt->bindValue(':name', $user->name);
-        $stmt->bindValue(':email', $user->email);
-        $stmt->bindValue(':password', $user->password);
+        $stmt->bindValue(':email', $user->email->value);
+        $stmt->bindValue(':password', $user->password->value);
         $stmt->execute();
 
         return (int)$stmt->fetchColumn();
     }
 
-    public function getUserByEmail(string $email): ?User
+    public function getUserByEmail(Email $email): ?User
     {
         $stmt = $this->db->prepare('SELECT * FROM users WHERE email = :email');
-        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':email', $email->value);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -57,17 +59,17 @@ class UserRepository implements RepositoryInterface
             return new User(
                 $row['id'],
                 $row['name'],
-                $row['email'],
-                $row['password'],
+                new Email($row['email']),
+                new Password($row['password']),
             );
         }
         return null;
     }
 
-    public function existsByEmail(string $email): bool
+    public function existsByEmail(Email $email): bool
     {
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
-        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':email', $email->value);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }

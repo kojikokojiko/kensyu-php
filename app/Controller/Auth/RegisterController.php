@@ -8,6 +8,8 @@ use App\Http\Response;
 use App\Model\User;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
+use App\ValueObject\Email;
+use App\ValueObject\Password;
 use InvalidArgumentException;
 use PDO;
 
@@ -30,17 +32,21 @@ class RegisterController implements ControllerInterface
     public function __invoke(Request $req, PDO $db): Response
     {
         $userRepository = new UserRepository($db);
-        $name = $req->post['name'];
-        $email = $req->post['email'];
-        $password = $req->post['password'];
-
-        // メールアドレスの重複をチェック
-        if ($userRepository->existsByEmail($email)) {
-            $_SESSION['errors'] = ["Email already exists."];
-            return new Response(302, '', ['Location: /register']);
-        }
+        $name = trim($req->post['name']);
+        $emailInput = trim($req->post['email']);
+        $passwordInput = trim($req->post['password']);
 
         try {
+            // バリューオブジェクトのバリデーション
+            $email = new Email($emailInput);
+            $password = new Password($passwordInput);
+
+            // メールアドレスの重複をチェック
+            if ($userRepository->existsByEmail($email)) {
+                $_SESSION['errors'] = ["Email already exists."];
+                return new Response(302, '', ['Location: /register']);
+            }
+
             // ユーザーを作成→ハッシュ化
             $user = (new User(null, $name, $email, $password))->toHashedPassword();
 

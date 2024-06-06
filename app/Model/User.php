@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\ValueObject\Email;
+use App\ValueObject\Password;
 use InvalidArgumentException;
 
 /**
@@ -14,68 +16,29 @@ use InvalidArgumentException;
  */
 readonly class User
 {
-    /**
-     * User constructor.
-     *
-     * Initializes the user with the given ID, name, email, password, and profile image.
-     *
-     * @param ?int $id The ID of the user, can be null.
-     * @param string $name The name of the user.
-     * @param string $email The email of the user.
-     * @param string $password The password of the user.
-     */
     public function __construct(
-        public ?int   $id,
-        public string $name,
-        public string $email,
-        public string $password,
-//        public ?string $profile_image = null
+        public ?int     $id,
+        public string   $name,
+        public Email    $email,
+        public Password $password
     )
     {
-        $errors = $this->validate();
+        $errors = $this->validateName($this->name);
         if (!empty($errors)) {
             throw new InvalidArgumentException(implode(', ', $errors));
         }
-
     }
 
-    /**
-     * Returns a new User instance with the password hashed.
-     *
-     * @return User The new User instance with the hashed password.
-     */
     public function toHashedPassword(): self
     {
         return new self(
             $this->id,
             $this->name,
             $this->email,
-            password_hash($this->password, PASSWORD_DEFAULT)
+            new Password($this->password->hash())
         );
     }
 
-    /**
-     * Validate user data.
-     *
-     * @return array An array of error messages, if any.
-     */
-    private function validate(): array
-    {
-        $errors = array_merge(
-            $this->validateName($this->name),
-            $this->validateEmail($this->email),
-            $this->validatePassword($this->password)
-        );
-
-        return $errors;
-    }
-
-    /**
-     * Validate the name of the user.
-     *
-     * @param string $name The name to validate.
-     * @return array An array of error messages, if any.
-     */
     private function validateName(string $name): array
     {
         $errors = [];
@@ -88,44 +51,4 @@ readonly class User
 
         return $errors;
     }
-
-    /**
-     * Validate the email of the user.
-     *
-     * @param string $email The email to validate.
-     * @return array An array of error messages, if any.
-     */
-    public static function validateEmail(string $email): array
-    {
-        $errors = [];
-
-        if (trim($email) === '') {
-            $errors[] = "Email is required.";
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Invalid email format.";
-        }
-
-        return $errors;
-    }
-
-    /**
-     * Validate the password of the user.
-     *
-     * @param string $password The password to validate.
-     * @return array An array of error messages, if any.
-     */
-    public static function validatePassword(string $password): array
-    {
-        $errors = [];
-
-        if (strlen($password) < 8 ||
-            !preg_match('/[A-Z]/', $password) ||
-            !preg_match('/[a-z]/', $password) ||
-            !preg_match('/[0-9]/', $password) ||
-            !preg_match('/[^\w]/', $password)) {
-            $errors[] = "Password must be at least 8 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters.";
-        }
-        return $errors;
-    }
 }
-?>
