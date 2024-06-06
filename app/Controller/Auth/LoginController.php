@@ -46,7 +46,6 @@ class LoginController implements ControllerInterface
                 // セッションIDの再生成
                 $this->sessionRepository->regenerateSession();
                 $this->sessionRepository->set('user_id', $user->id);
-                $this->sessionRepository->set('user_name', $user->name);
 
                 return new Response(302, '', ['Location: /']);
             } else {

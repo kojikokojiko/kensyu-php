@@ -46,7 +46,6 @@ class RegisterController implements ControllerInterface
 
             $userId = $userRepository->createUser($user);
             $this->sessionRepository->set('user_id', $userId);
-            $this->sessionRepository->set('user_name', $user->name);
 
             return new Response(302, '', ['Location: /']);
         } catch (InvalidArgumentException $e) {
