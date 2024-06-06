@@ -6,11 +6,19 @@ use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\User;
+use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
 use PDO;
 
 class LoginController implements ControllerInterface
 {
+    private SessionRepository $sessionRepository;
+
+    public function __construct(SessionRepository $sessionRepository)
+    {
+        $this->sessionRepository = $sessionRepository;
+    }
+
 
     /**
      * Invoke action for user login.
@@ -35,17 +43,19 @@ class LoginController implements ControllerInterface
         if (empty($errors)) {
             $user = $userRepository->getUserByEmail($email);
             if (!is_null($user) && password_verify($password, $user->password)) {
-                $_SESSION['user_id'] = $user->id;
-                $_SESSION['user_name'] = $user->name;
+                // セッションIDの再生成
+                $this->sessionRepository->regenerateSession();
+                $this->sessionRepository->set('user_id', $user->id);
+                $this->sessionRepository->set('user_name', $user->name);
 
                 return new Response(302, '', ['Location: /']);
             } else {
-                $_SESSION['errors'] = ['Invalid email or password'];
+                $this->sessionRepository->setErrors(['Invalid email or password']);
 
                 return new Response(302, '', ['Location: /login']);
             }
         } else {
-            $_SESSION['errors'] = $errors;
+            $this->sessionRepository->setErrors($errors);
 
             return new Response(302, '', ['Location: /login']);
         }

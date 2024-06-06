@@ -4,6 +4,7 @@ namespace App;
 
 use App\Controller\ControllerInterface;
 use App\Http\Request;
+use App\Repository\SessionRepository;
 
 /**
  * Class Route
@@ -13,6 +14,13 @@ use App\Http\Request;
  * @package App
  */
 class Route {
+
+    private static SessionRepository $sessionRepository;
+
+    public static function init(SessionRepository $sessionRepository): void {
+        self::$sessionRepository = $sessionRepository;
+    }
+
     /**
      * Get the controller and method based on the HTTP method and URI.
      *
@@ -59,13 +67,13 @@ class Route {
                  return new \App\Controller\CreateArticleController();
              }
             if ($path === '/register') {
-                return new Controller\Auth\RegisterController();
+                return new Controller\Auth\RegisterController(self::$sessionRepository);
             }
             if ($path === '/login') {
-                return new \App\Controller\Auth\LoginController();
+                return new \App\Controller\Auth\LoginController(self::$sessionRepository);
             }
             if ($path === '/logout') {
-                return new \App\Controller\Auth\LogoutController();
+                return new \App\Controller\Auth\LogoutController(self::$sessionRepository);
             }
         }elseif($method === 'DELETE') {
             // Handle routes like /article/{id}

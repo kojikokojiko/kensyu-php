@@ -4,6 +4,7 @@ namespace App;
 
 use App\Controller\ErrorController;
 use App\Http\Request;
+use App\Repository\SessionRepository;
 use Exception;
 
 /**
@@ -28,7 +29,13 @@ class App {
         //ini_set('session.cookie_secure', 'true'); // HTTPSの場合のみ必要
         ini_set('session.cookie_httponly', 'true');
 
-        session_start();
+
+        // SessionRepositoryを初期化してセッションを開始
+        $sessionRepository = new SessionRepository();
+        $sessionRepository->startSession();
+
+        // Routeクラスを初期化
+        Route::init($sessionRepository);
 
         $req = new Request(
             $_SERVER['REQUEST_METHOD'],

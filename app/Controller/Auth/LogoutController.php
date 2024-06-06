@@ -6,6 +6,7 @@ namespace App\Controller\Auth;
 use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
+use App\Repository\SessionRepository;
 use PDO;
 
 /**
@@ -17,6 +18,14 @@ use PDO;
  */
 class LogoutController implements ControllerInterface
 {
+
+    private SessionRepository $sessionRepository;
+
+    public function __construct(SessionRepository $sessionRepository)
+    {
+        $this->sessionRepository = $sessionRepository;
+    }
+
     /**
      * Invoke action for user logout.
      *
@@ -26,8 +35,7 @@ class LogoutController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response
     {
-        session_unset(); // セッション変数を全てクリア
-        session_destroy(); // セッションを破棄
+        $this->sessionRepository->destroySession();
 
         return new Response(302, '', ['Location: /']);
     }

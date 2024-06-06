@@ -6,12 +6,19 @@ use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\User;
+use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
 use InvalidArgumentException;
 use PDO;
 
 class RegisterController implements ControllerInterface
 {
+    private SessionRepository $sessionRepository;
+
+    public function __construct(SessionRepository $sessionRepository)
+    {
+        $this->sessionRepository = $sessionRepository;
+    }
 
     /**
      * Invoke action for user registration.
@@ -38,8 +45,8 @@ class RegisterController implements ControllerInterface
             $user = (new User(null, $name, $email, $password))->toHashedPassword();
 
             $userId = $userRepository->createUser($user);
-            $_SESSION['user_id'] = $userId;
-            $_SESSION['user_name'] = $user->name;
+            $this->sessionRepository->set('user_id', $userId);
+            $this->sessionRepository->set('user_name', $user->name);
 
             return new Response(302, '', ['Location: /']);
         } catch (InvalidArgumentException $e) {
