@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace App\Repository;
 
-use App\Dto\ArticleWithUserAndTagsDto;
 use App\Dto\ArticleWithUserAndThumbnailDTO;
 use App\Dto\ArticleWithUserDto;
 use App\Model\Article;
@@ -97,7 +96,6 @@ class ArticleRepository implements RepositoryInterface {
                 $data['body'],
                 $data['user_id'],
                 $data['user_name'],
-                [],
                 $data['thumbnail_path'] ?? null // サムネイルが存在しない場合はnullを設定
             );
         }
@@ -140,56 +138,12 @@ class ArticleRepository implements RepositoryInterface {
         return $data ? new Article($data['id'], $data['title'], $data['body'], $data['user_id']) : null;
     }
 
-    /**
-     * Get an article by its ID with user information.
-     *
-     * @param int $id The ID of the article.
-     * @return ArticleWithUserDTO|null The article with user information DTO or null if not found.
-     */
-    public function getArticleByIdWithUser(int $id): ?ArticleWithUserAndTagsDto {
-        $stmt = $this->db->prepare("
-        SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name, c.name as category_name
-        FROM articles a 
-        JOIN users u ON a.user_id = u.id
-        LEFT JOIN article_category_tagging act ON a.id = act.article_id
-        LEFT JOIN categories c ON act.category_id = c.id
-        WHERE a.id = :id
-    ");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!$data) {
-            return null;
-        }
-
-        $articleWithUser = new ArticleWithUserAndTagsDto(
-            $data[0]['article_id'],
-            $data[0]['title'],
-            $data[0]['body'],
-            $data[0]['user_id'],
-            $data[0]['user_name'],
-            []
-        );
-
-        foreach ($data as $row) {
-            if (isset($row['category_name'])) {
-                $articleWithUser->categories[] = $row['category_name'];
-            }
-        }
-
-        return $articleWithUser;
-    }
-
-
     public function getArticleByIdWithUserAndThumbnail(int $id): ?ArticleWithUserAndThumbnailDTO {
         $stmt = $this->db->prepare("
-            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name, t.path as thumbnail_path, c.name as category_name
+            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name, t.path as thumbnail_path
             FROM articles a
             JOIN users u ON a.user_id = u.id
             LEFT JOIN thumbnails t ON a.id = t.article_id
-            LEFT JOIN article_category_tagging act ON a.id = act.article_id
-            LEFT JOIN categories c ON act.category_id = c.id
             WHERE a.id = :id
         ");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -200,21 +154,14 @@ class ArticleRepository implements RepositoryInterface {
             return null;
         }
 
-
-        $article=new ArticleWithUserAndThumbnailDTO(
+        return new ArticleWithUserAndThumbnailDTO(
             $data['article_id'],
             $data['title'],
             $data['body'],
             $data['user_id'],
             $data['user_name'],
-            [],
             $data['thumbnail_path'] ?? null // サムネイルが存在しない場合はnullを設定
         );
-        if (isset($data['category_name'])) {
-            $article->categories[] = $data['category_name'];
-        }
-
-        return $article;
     }
 
 

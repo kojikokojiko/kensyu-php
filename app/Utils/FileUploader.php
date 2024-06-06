@@ -24,8 +24,8 @@ class FileUploader
             case 'thumbnails':
                 $uploadDir = $baseDir . 'thumbnails/';
                 break;
-            case 'image':
-                $uploadDir = $baseDir . 'images/';
+            case 'article_images':
+                $uploadDir = $baseDir . 'article_images/';
                 break;
             default:
                 throw new InvalidArgumentException('無効なファイルタイプです。');

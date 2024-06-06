@@ -6,6 +6,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleCategoryRepository;
+use App\Repository\ArticleImagesRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ThumbnailRepository;
 use App\Utils\FileUploader;
@@ -36,6 +37,8 @@ class CreateArticleController implements ControllerInterface {
         $articleRepository = new ArticleRepository($db);
         $articleCategoryRepository=new ArticleCategoryRepository($db);
         $thumbnailRepository = new ThumbnailRepository($db);
+        $articleImagesRepository= new ArticleImagesRepository($db);
+        $images = $req->files['article_images']; // 複数画像ファイルを取得
 
         $title = $req->post['title'];
         $body = $req->post['body'];
@@ -51,6 +54,7 @@ class CreateArticleController implements ControllerInterface {
         $userId = $_SESSION['user_id'];
 
         try{
+            $db->beginTransaction();
             $thumbnailPath = FileUploader::saveFile($thumbnail, 'thumbnails');
 
             $article= new Article(null, $title, $body, $userId);
@@ -63,6 +67,15 @@ class CreateArticleController implements ControllerInterface {
             // サムネイル情報の保存
             $thumbnailRepository->createThumbnail($articleId, $thumbnailPath);
 
+            // 複数画像の保存
+            $imagePaths = [];
+            foreach ($images['tmp_name'] as $key => $tmpName) {
+                $imagePath = FileUploader::saveFile(['tmp_name' => $tmpName, 'name' => $images['name'][$key]], 'article_images');
+                $imagePaths[] = $imagePath;
+            }
+            $articleImagesRepository->createImages($articleId, $imagePaths);
+
+            $db->commit();
             // Redirect to the home page after successful creation
             return new Response(302, '', ['Location: /']);
 

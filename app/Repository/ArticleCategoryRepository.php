@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Model\Category;
 use PDO;
 
 class ArticleCategoryRepository
@@ -62,10 +63,23 @@ class ArticleCategoryRepository
 
     public function getCategoriesByArticleId(int $articleId): array
     {
-        $stmt = $this->db->prepare("SELECT category_id FROM article_category_tagging WHERE article_id = :article_id");
+        $stmt = $this->db->prepare(
+            "SELECT act.category_id, c.name 
+         FROM article_category_tagging act 
+         JOIN categories c ON act.category_id = c.id
+         WHERE act.article_id = :article_id"
+        );
         $stmt->bindValue(':article_id', $articleId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $categories = [];
+        foreach ($results as $row) {
+            $categories[] = new Category((int)$row['category_id'], $row['name']);
+        }
+
+        return $categories;
     }
 
 

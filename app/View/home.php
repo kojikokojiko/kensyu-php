@@ -56,6 +56,8 @@ if (!empty($_SESSION['errors'])) {
     <label for="thumbnail">Thumbnail:</label><br>
     <input type="file" id="thumbnails" name="thumbnails" accept="image/*" required><br><br>
 
+    <label for="article_images">Images:</label><br>
+    <input type="file" id="article_images" name="article_images[]" multiple><br><br>
 
     <!--    <label for="images">Additional Images:</label><br>-->
 <!--    <input type="file" id="images" name="images[]" multiple><br><br>-->

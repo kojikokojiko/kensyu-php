@@ -5,6 +5,8 @@ namespace App\Controller\Article;
 use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
+use App\Repository\ArticleCategoryRepository;
+use App\Repository\ArticleImagesRepository;
 use App\Repository\ArticleRepository;
 use PDO;
 
@@ -36,9 +38,15 @@ class ArticleDetailController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
-
+        $articleCategoryRepository= new ArticleCategoryRepository($db);
+        $articleImagesRepository= new ArticleImagesRepository($db);
         // getArticleByIdWithUserメソッドを使用して記事とユーザー情報を取得
         $articleWithUser = $articleRepository->getArticleByIdWithUserAndThumbnail($this->articleId);
+        $categories=$articleCategoryRepository->getCategoriesByArticleId($this->articleId);
+        $images=$articleImagesRepository->getImagesByArticleId($this->articleId);
+
+
+
         if ($articleWithUser) {
             ob_start();
             include __DIR__ . '/../../View/article_detail.php';

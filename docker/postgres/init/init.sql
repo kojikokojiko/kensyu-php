@@ -52,8 +52,18 @@ CREATE TABLE article_category_tagging (
 CREATE TABLE thumbnails (
     id SERIAL PRIMARY KEY,
     path VARCHAR NOT NULL,
-    article_id INT NOT NULL REFERENCES articles(id),
+    article_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
 );
+
+CREATE TABLE article_images (
+    id SERIAL PRIMARY KEY,
+    path VARCHAR NOT NULL,
+    article_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
+);
+
