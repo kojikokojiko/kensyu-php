@@ -95,7 +95,7 @@ readonly class User
      * @param string $email The email to validate.
      * @return array An array of error messages, if any.
      */
-    private function validateEmail(string $email): array
+    public static function validateEmail(string $email): array
     {
         $errors = [];
 
@@ -114,10 +114,9 @@ readonly class User
      * @param string $password The password to validate.
      * @return array An array of error messages, if any.
      */
-    private function validatePassword(string $password): array
+    public static function validatePassword(string $password): array
     {
         $errors = [];
-
 
         if (strlen($password) < 8 ||
             !preg_match('/[A-Z]/', $password) ||
@@ -128,7 +127,5 @@ readonly class User
         }
         return $errors;
     }
-
 }
-
 ?>

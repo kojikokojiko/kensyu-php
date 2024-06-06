@@ -5,6 +5,7 @@ namespace App\Controller\Auth;
 use App\Controller\ControllerInterface;
 use App\Http\Request;
 use App\Http\Response;
+use App\Model\User;
 use App\Repository\UserRepository;
 use PDO;
 
@@ -26,6 +27,11 @@ class LoginController implements ControllerInterface
         $email = trim($req->post['email']);
         $password = trim($req->post['password']);
 
+        $errors = array_merge(
+            User::validateEmail($email),
+            User::validatePassword($password)
+        );
+
         if (empty($errors)) {
             $user = $userRepository->getUserByEmail($email);
             if (!is_null($user) && password_verify($password, $user->password)) {
@@ -35,10 +41,12 @@ class LoginController implements ControllerInterface
                 return new Response(302, '', ['Location: /']);
             } else {
                 $_SESSION['errors'] = ['Invalid email or password'];
+
                 return new Response(302, '', ['Location: /login']);
             }
         } else {
             $_SESSION['errors'] = $errors;
+
             return new Response(302, '', ['Location: /login']);
         }
     }
