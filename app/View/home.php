@@ -16,7 +16,9 @@
 <?php else: ?>
     <div class="div">
 <!--        <a href="/login">Login</a>-->
+        <a href="/login">Login</a>
         <a href="/register">Register</a>
+
         <div>Not SignedIn</div>
 
     </div>
