@@ -41,20 +41,20 @@ class LoginController implements ControllerInterface
         );
 
         if (empty($errors)) {
-            $user = $userRepository->getUserByEmail($email);
-            if (!is_null($user) && password_verify($password, $user->password)) {
-                // セッションIDの再生成
-                $this->sessionRepository->regenerateSession();
-                $this->sessionRepository->set('user_id', $user->id);
-
-                return new Response(302, '', ['Location: /']);
-            } else {
-                $this->sessionRepository->setErrors(['Invalid email or password']);
-
-                return new Response(302, '', ['Location: /login']);
-            }
-        } else {
             $this->sessionRepository->setErrors($errors);
+
+            return new Response(302, '', ['Location: /login']);
+        }
+
+        $user = $userRepository->getUserByEmail($email);
+        if (!is_null($user) && password_verify($password, $user->password)) {
+            // セッションIDの再生成
+            $this->sessionRepository->regenerateSession();
+            $this->sessionRepository->set('user_id', $user->id);
+
+            return new Response(302, '', ['Location: /']);
+        } else {
+            $this->sessionRepository->setErrors(['Invalid email or password']);
 
             return new Response(302, '', ['Location: /login']);
         }
