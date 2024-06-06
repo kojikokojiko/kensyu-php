@@ -12,7 +12,7 @@
             Log out
         </button>
     </form>
-    <div>Logged in as user ID:<?= htmlspecialchars($_SESSION['user_id'], ENT_QUOTES, 'UTF-8') ?></div>
+    <div>Logged in as user ID:<?= htmlspecialchars($_SESSION['user_id']. $_SESSION['user_name'] , ENT_QUOTES, 'UTF-8') ?></div>
 <?php else: ?>
     <div class="div">
 <!--        <a href="/login">Login</a>-->
