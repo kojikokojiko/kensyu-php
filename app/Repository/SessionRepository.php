@@ -18,7 +18,7 @@ class SessionRepository
     /**
      * Destroy the session.
      */
-    public function destroySession(): void
+    public function clearSession(): void
     {
         session_unset(); // セッション変数を全てクリア
         session_destroy(); // セッションを破棄

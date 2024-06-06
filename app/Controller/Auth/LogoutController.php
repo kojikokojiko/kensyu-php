@@ -35,7 +35,7 @@ class LogoutController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response
     {
-        $this->sessionRepository->destroySession();
+        $this->sessionRepository->clearSession();
 
         return new Response(302, '', ['Location: /']);
     }
