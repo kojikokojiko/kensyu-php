@@ -45,7 +45,7 @@ class RegisterController implements ControllerInterface
 
             // メールアドレスの重複をチェック
             if ($userRepository->existsByEmail($email)) {
-                $_SESSION['errors'] = ["Email already exists."];
+                $this->sessionRepository->setErrors(["Email already exists."]);
                 return new Response(302, '', ['Location: /register']);
             }
 
@@ -57,7 +57,7 @@ class RegisterController implements ControllerInterface
 
             return new Response(302, '', ['Location: /']);
         } catch (InvalidArgumentException $e) {
-            $_SESSION['errors'] = [$e->getMessage()];
+            $this->sessionRepository->setErrors([$e->getMessage()]);
             return new Response(302, '', ['Location: /register']);
         }
     }
