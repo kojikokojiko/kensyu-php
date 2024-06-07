@@ -108,7 +108,7 @@ class ArticleRepository implements RepositoryInterface
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? new Article($data['id'], $data['title'], $data['body']) : null;
+        return $data ? new Article($data['id'], $data['title'], $data['body'],$data['user_id']) : null;
     }
 
     /**
