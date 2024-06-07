@@ -75,9 +75,9 @@ if (!empty($_SESSION['errors'])) {
                 <p><?= nl2br(htmlspecialchars($article->body, ENT_QUOTES, 'UTF-8')) ?></p>
                 <p>UserId:<?= nl2br(htmlspecialchars($article->userId, ENT_QUOTES, 'UTF-8')) ?></p>
                 <p>UserName:<?= nl2br(htmlspecialchars($article->userName, ENT_QUOTES, 'UTF-8')) ?></p>
-                <a href="/article/<?= $article->id ?>">Read more</a>
-                <a href="/article/<?= $article->id ?>/edit">Edit</a>
-                <form action="/article/<?= $article->id ?>" method="POST">
+                <a href="/article/<?= $article->articleId ?>">Read more</a>
+                <a href="/article/<?= $article->articleId ?>/edit">Edit</a>
+                <form action="/article/<?= $article->articleId ?>" method="POST">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit">Delete Article</button>
                 </form>
