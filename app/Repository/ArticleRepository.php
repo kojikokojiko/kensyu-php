@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Dto\ArticleWithUserDto;
 use App\Model\Article;
 use PDO;
 
@@ -46,12 +47,35 @@ class ArticleRepository implements RepositoryInterface
 
         $articles = [];
         foreach ($articlesData as $data) {
-            $articles[] = new Article($data['id'], $data['title'], $data['body']);
+            $articles[] = new Article($data['id'], $data['title'], $data['body'], $data['user_id']);
         }
 
         return $articles;
     }
 
+
+    /**
+     * Get all articles with user information.
+     *
+     * Retrieves all articles from the database along with their associated user information.
+     *
+     * @return ArticleWithUserDTO[] An array of ArticleWithUserDTO objects.
+     */
+    public function getAllArticlesWithUser(): array {
+        $stmt = $this->db->query("
+            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name 
+            FROM articles a 
+            JOIN users u ON a.user_id = u.id
+        ");
+        $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $articles = [];
+        foreach ($articlesData as $data) {
+            $articles[] = new ArticleWithUserDTO($data['article_id'], $data['title'], $data['body'], $data['user_id'], $data['user_name']);
+        }
+
+        return $articles;
+    }
     /**
      * Create a new article.
      *
@@ -60,9 +84,10 @@ class ArticleRepository implements RepositoryInterface
      */
     public function createArticle(Article $article): int
     {
-        $stmt = $this->db->prepare("INSERT INTO articles (title, body) VALUES (:title, :body) RETURNING id");
+        $stmt = $this->db->prepare("INSERT INTO articles (title, body, user_id) VALUES (:title, :body, :user_id) RETURNING id");
         $stmt->bindValue(':title', $article->title);
         $stmt->bindValue(':body', $article->body);
+        $stmt->bindValue(':user_id', $article->userId);
         $stmt->execute();
 
         return (int)$stmt->fetchColumn();

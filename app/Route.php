@@ -64,7 +64,7 @@ class Route {
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
              if ($path === '/article') {
-                 return new \App\Controller\CreateArticleController();
+                 return new \App\Controller\CreateArticleController(self::$sessionRepository);
              }
             if ($path === '/register') {
                 return new Controller\Auth\RegisterController(self::$sessionRepository);

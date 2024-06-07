@@ -67,12 +67,14 @@ if (!empty($_SESSION['errors'])) {
 
 <!-- Article List -->
 <h2>Articles</h2>
-<?php if (!empty($articles)): ?>
+<?php if (!empty($articlesWithUser)): ?>
     <ul>
-        <?php foreach ($articles as $article): ?>
+        <?php foreach ($articlesWithUser as $article): ?>
             <li>
                 <h2><?= htmlspecialchars($article->title, ENT_QUOTES, 'UTF-8') ?></h2>
                 <p><?= nl2br(htmlspecialchars($article->body, ENT_QUOTES, 'UTF-8')) ?></p>
+                <p>UserId:<?= nl2br(htmlspecialchars($article->userId, ENT_QUOTES, 'UTF-8')) ?></p>
+                <p>UserName:<?= nl2br(htmlspecialchars($article->userName, ENT_QUOTES, 'UTF-8')) ?></p>
                 <a href="/article/<?= $article->id ?>">Read more</a>
                 <a href="/article/<?= $article->id ?>/edit">Edit</a>
                 <form action="/article/<?= $article->id ?>" method="POST">
