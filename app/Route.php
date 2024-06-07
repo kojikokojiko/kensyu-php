@@ -79,7 +79,7 @@ class Route {
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\DeleteArticleController($articleId);
+                return new \App\Controller\DeleteArticleController($articleId, self::$sessionRepository);
             }
         }
         elseif($method === 'PUT') {
