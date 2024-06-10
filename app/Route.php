@@ -59,7 +59,7 @@ class Route {
             // Handle routes like /article/{id}/edit
             if (preg_match('#^/article/(\d+)/edit$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\EditPageController($articleId);
+                return new \App\Controller\EditPageController($articleId, self::$sessionRepository);
             }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
@@ -86,7 +86,7 @@ class Route {
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\UpdateArticleController($articleId);
+                return new \App\Controller\UpdateArticleController($articleId, self::$sessionRepository);
             }
         }
 

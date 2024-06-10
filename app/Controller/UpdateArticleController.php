@@ -7,6 +7,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleRepository;
+use App\Repository\SessionRepository;
 use InvalidArgumentException;
 use PDO;
 
@@ -20,10 +21,13 @@ use PDO;
 class UpdateArticleController implements ControllerInterface
 {
     private int $articleId;
+    private SessionRepository $sessionRepository;
 
-    public function __construct(int $articleId)
+    public function __construct(int $articleId, SessionRepository $sessionRepository)
     {
         $this->articleId = $articleId;
+        $this->sessionRepository = $sessionRepository;
+
     }
 
     /**
@@ -41,9 +45,10 @@ class UpdateArticleController implements ControllerInterface
         $articleRepository = new ArticleRepository($db);
         $title = $req->post['title'];
         $body = $req->post['body'];
+        $userId = $this->sessionRepository->get('user_id');
 
         try {
-            $article = new Article($this->articleId, $title, $body);
+            $article = new Article($this->articleId, $title, $body, $userId);
             $articleRepository->updateArticle($article);
             return new Response(302, '', ['Location: /article/' . $this->articleId]);
 
