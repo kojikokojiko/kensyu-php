@@ -61,7 +61,18 @@ if (!empty($_SESSION['errors'])) {
     <!---->
     <!--    <label for="tags">Tags (comma-separated):</label><br>-->
     <!--    <input type="text" id="tags" name="tags"><br><br>-->
+    <?php if (!empty($allCategories)): ?>
 
+
+        <?php foreach ($allCategories as $categoryId => $categoryName): ?>
+            <ul style="list-style-type: none;">
+                <li>
+                    <input type="checkbox" id="categoryIds" name="categoryIds[]" value="<?= $categoryId ?>"><?= $categoryName ?>
+                </li>
+            </ul>
+        <?php endforeach; ?>
+
+    <?php endif; ?>
     <button type="submit">Submit</button>
 </form>
 
