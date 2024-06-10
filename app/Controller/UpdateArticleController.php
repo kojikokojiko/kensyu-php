@@ -42,10 +42,25 @@ class UpdateArticleController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response
     {
+        $userId = $this->sessionRepository->get('user_id');
+
+        // ユーザーがログインしていることを確認
+        if (is_null($userId)) {
+            $this->sessionRepository->setErrors(['ログインが必要です。']);
+            return new Response(302, '', ['Location: /login']);
+        }
+
         $articleRepository = new ArticleRepository($db);
+        $article = $articleRepository->getArticleById($this->articleId);
+
+        // 記事が存在し、かつログインユーザーのものであることを確認
+        if (is_null($article) || $article->userId !== $userId) {
+            $this->sessionRepository->setErrors(['他のユーザーの投稿は編集できません。']);
+            return new Response(302, '', ['Location: /']);
+        }
+
         $title = $req->post['title'];
         $body = $req->post['body'];
-        $userId = $this->sessionRepository->get('user_id');
 
         try {
             $article = new Article($this->articleId, $title, $body, $userId);
