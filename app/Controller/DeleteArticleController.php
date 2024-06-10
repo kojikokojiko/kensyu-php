@@ -51,7 +51,7 @@ class DeleteArticleController implements ControllerInterface {
         $article = $articleRepository->getArticleById($this->articleId);
 
         // 削除する記事がログインユーザーのものであるか確認
-        if ($article === null || $article->userId !== $this->sessionRepository->get('user_id')) {
+        if (is_null($article) || $article->userId !== $this->sessionRepository->get('user_id')) {
             $this->sessionRepository->setErrors(['他のユーザーの投稿は削除できません。']);
 
             return new Response(302, '', ['Location: /']);
