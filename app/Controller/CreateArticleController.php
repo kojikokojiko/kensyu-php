@@ -43,7 +43,7 @@ class CreateArticleController implements ControllerInterface {
 
         $userId=$this->sessionRepository->get('user_id');
         // ユーザーがログインしていることを確認
-        if (!$userId) {
+        if (is_null($userId)) {
             $_SESSION['errors'] = ['ログインが必要です。'];
             $this->sessionRepository->setErrors(['ログインが必要です。']);
             return new Response(302, '', ['Location: /login']);
