@@ -21,14 +21,17 @@ use PDO;
 class UpdateArticleController implements ControllerInterface
 {
     private int $articleId;
+    private int $userId;
     private SessionRepository $sessionRepository;
 
-    public function __construct(int $articleId, SessionRepository $sessionRepository)
+
+    public function __construct(int $articleId, int $userId, SessionRepository $sessionRepository)
     {
         $this->articleId = $articleId;
+        $this->userId = $userId;
         $this->sessionRepository = $sessionRepository;
-
     }
+
 
     /**
      * Invoke action for updating an article.
@@ -42,19 +45,11 @@ class UpdateArticleController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response
     {
-        $userId = $this->sessionRepository->get('user_id');
-
-        // ユーザーがログインしていることを確認
-        if (is_null($userId)) {
-            $this->sessionRepository->setErrors(['ログインが必要です。']);
-            return new Response(302, '', ['Location: /login']);
-        }
-
         $articleRepository = new ArticleRepository($db);
         $article = $articleRepository->getArticleById($this->articleId);
 
         // 記事が存在し、かつログインユーザーのものであることを確認
-        if (is_null($article) || $article->userId !== $userId) {
+        if (is_null($article) || $article->userId !== $this->userId) {
             $this->sessionRepository->setErrors(['他のユーザーの投稿は編集できません。']);
             return new Response(302, '', ['Location: /']);
         }
@@ -63,7 +58,7 @@ class UpdateArticleController implements ControllerInterface
         $body = $req->post['body'];
 
         try {
-            $article = new Article($this->articleId, $title, $body, $userId);
+            $article = new Article($this->articleId, $title, $body, $this->userId);
             $articleRepository->updateArticle($article);
             return new Response(302, '', ['Location: /article/' . $this->articleId]);
 

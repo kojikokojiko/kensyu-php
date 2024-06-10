@@ -4,6 +4,7 @@ namespace App;
 
 use App\Controller\ControllerInterface;
 use App\Http\Request;
+use App\Controller\RedirectController;
 use App\Repository\SessionRepository;
 
 /**
@@ -59,7 +60,11 @@ class Route {
             // Handle routes like /article/{id}/edit
             if (preg_match('#^/article/(\d+)/edit$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\EditPageController($articleId, self::$sessionRepository);
+                $userId = self::checkLogin();
+                if (is_null($userId)) {
+                    return self::redirectToLogin();
+                }
+                return new \App\Controller\EditPageController($articleId, $userId, self::$sessionRepository);
             }
         } elseif ($method === 'POST') {
             // Uncomment and add more POST routes here
@@ -79,20 +84,44 @@ class Route {
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\DeleteArticleController($articleId, self::$sessionRepository);
+                $userId =self::$sessionRepository->get('user_id');
+                return new \App\Controller\DeleteArticleController($articleId, $userId, self::$sessionRepository);
             }
         }
         elseif($method === 'PUT') {
             // Handle routes like /article/{id}
             if (preg_match('#^/article/(\d+)$#', $path, $matches)) {
                 $articleId = (int) $matches[1];
-                return new \App\Controller\UpdateArticleController($articleId, self::$sessionRepository);
+                $userId = self::checkLogin();
+                if (is_null($userId)) {
+                    return self::redirectToLogin();
+                }
+                return new \App\Controller\UpdateArticleController($articleId, $userId, self::$sessionRepository);
             }
         }
 
 //        どれも通らなかったら404のエラーコントローラーを返す
         return new \App\Controller\ErrorController("404 Not Found", 404);
 
+    }
+
+    /**
+     * Check if the user is logged in.
+     *
+     * @return int|null The user ID if logged in, or null if not.
+     */
+    private static function checkLogin(): ?int {
+        return self::$sessionRepository->get('user_id');
+    }
+
+    /**
+     * Redirect to the login page.
+     *
+     * @return ControllerInterface The redirect controller to the login page.
+     */
+    private static function redirectToLogin(): ControllerInterface {
+        self::$sessionRepository->setErrors(['ログインが必要です。']);
+        return new RedirectController('/login');
     }
 }
 ?>
