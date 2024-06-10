@@ -63,9 +63,9 @@ class ArticleRepository implements RepositoryInterface
      */
     public function getAllArticlesWithUser(): array {
         $stmt = $this->db->query("
-            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name 
-            FROM articles a 
-            JOIN users u ON a.user_id = u.id
+            SELECT articles.id as article_id, articles.title, articles.body, articles.user_id, users.name as user_name 
+            FROM articles
+            JOIN users ON articles.user_id = users.id
         ");
         $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
