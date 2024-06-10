@@ -5,6 +5,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleRepository;
+use App\Repository\SessionRepository;
 use InvalidArgumentException;
 use PDO;
 
@@ -17,17 +18,17 @@ use PDO;
  */
 class DeleteArticleController implements ControllerInterface {
     private int $articleId;
+    private SessionRepository $sessionRepository;
 
     /**
      * DeleteArticleController constructor.
      *
      * @param int $articleId The ID of the article to be deleted.
      */
-    public function __construct(int $articleId) {
+    public function __construct(int $articleId, SessionRepository $sessionRepository) {
         $this->articleId = $articleId;
+        $this->sessionRepository = $sessionRepository;
     }
-
-
 
     /**
      * Invoke method to handle the HTTP request.
@@ -37,8 +38,24 @@ class DeleteArticleController implements ControllerInterface {
      * @return Response The HTTP response object.
      */
     public function __invoke(Request $req, PDO $db): Response {
-        $articleRepository = new ArticleRepository($db);
 
+        $userId=$this->sessionRepository->get('user_id');
+        // ユーザーがログインしていることを確認
+        if (is_null($userId)) {
+            $this->sessionRepository->setErrors(['ログインが必要です。']);
+
+            return new Response(302, '', ['Location: /login']);
+        }
+
+        $articleRepository = new ArticleRepository($db);
+        $article = $articleRepository->getArticleById($this->articleId);
+
+        // 削除する記事がログインユーザーのものであるか確認
+        if (is_null($article) || $article->userId !== $this->sessionRepository->get('user_id')) {
+            $this->sessionRepository->setErrors(['他のユーザーの投稿は削除できません。']);
+
+            return new Response(302, '', ['Location: /']);
+        }
         // Delete the article by its ID.
         $rowsDeleted = $articleRepository->deleteArticle($this->articleId);
 
