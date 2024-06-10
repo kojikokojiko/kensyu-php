@@ -112,6 +112,24 @@ class ArticleRepository implements RepositoryInterface
     }
 
     /**
+     * Get an article by its ID and user ID.
+     *
+     * @param int $id The ID of the article.
+     * @param int $userId The ID of the user.
+     * @return Article|null The article object or null if not found.
+     */
+    public function getArticleByIdAndUserId(int $id, int $userId): ?Article
+    {
+        $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id AND user_id = :user_id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $data ? new Article((int) $data['id'], $data['title'], $data['body'], (int) $data['user_id']) : null;
+    }
+
+    /**
      * Delete an article by its ID.
      *
      * Deletes an article from the database by its ID.

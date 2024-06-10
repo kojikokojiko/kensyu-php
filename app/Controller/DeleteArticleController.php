@@ -39,12 +39,11 @@ class DeleteArticleController implements ControllerInterface {
     public function __invoke(Request $req, PDO $db): Response {
 
         $articleRepository = new ArticleRepository($db);
-        $article = $articleRepository->getArticleById($this->articleId);
+        $article = $articleRepository->getArticleByIdAndUserId($this->articleId, $this->userId);
 
-        // 削除する記事がログインユーザーのものであるか確認
-        if (is_null($article) || $article->userId !== $this->userId) {
-            $this->sessionRepository->setErrors(['他のユーザーの投稿は削除できません。']);
-
+        // 記事が存在し、かつログインユーザーのものであることを確認
+        if (is_null($article)) {
+            $this->sessionRepository->setErrors(['他のユーザーの投稿は編集できません。']);
             return new Response(302, '', ['Location: /']);
         }
         // Delete the article by its ID.

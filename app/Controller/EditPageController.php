@@ -43,10 +43,10 @@ class EditPageController implements ControllerInterface
     public function __invoke(Request $req, PDO $db): Response
     {
         $articleRepository = new ArticleRepository($db);
-        $article = $articleRepository->getArticleById($this->articleId);
+        $article = $articleRepository->getArticleByIdAndUserId($this->articleId, $this->userId);
 
         // 記事が存在し、かつログインユーザーのものであることを確認
-        if (is_null($article) || $article->userId !== $this->userId) {
+        if (is_null($article)) {
             $this->sessionRepository->setErrors(['他のユーザーの投稿は編集できません。']);
             return new Response(302, '', ['Location: /']);
         }
