@@ -5,6 +5,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleRepository;
+use App\Repository\SessionRepository;
 use InvalidArgumentException;
 use PDO;
 
@@ -17,6 +18,13 @@ use PDO;
  */
 class CreateArticleController implements ControllerInterface {
 
+
+    private SessionRepository $sessionRepository;
+
+    public function __construct(SessionRepository $sessionRepository)
+    {
+        $this->sessionRepository = $sessionRepository;
+    }
     /**
      * Invoke action for creating a new article.
      *
@@ -30,12 +38,19 @@ class CreateArticleController implements ControllerInterface {
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
 
-
         $title = $req->post['title'];
         $body = $req->post['body'];
 
+        $userId=$this->sessionRepository->get('user_id');
+        // ユーザーがログインしていることを確認
+        if (is_null($userId)) {
+            $_SESSION['errors'] = ['ログインが必要です。'];
+            $this->sessionRepository->setErrors(['ログインが必要です。']);
+            return new Response(302, '', ['Location: /login']);
+        }
+
         try{
-            $article= new Article(null,$title, $body);
+            $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
             // Redirect to the home page after successful creation
             return new Response(302, '', ['Location: /']);
