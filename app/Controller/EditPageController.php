@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Controller;
+
 use App\Http\Request;
 use App\Http\Response;
-
 use App\Repository\ArticleRepository;
-
+use App\Repository\SessionRepository;
 use PDO;
 
 /**
@@ -15,11 +16,15 @@ use PDO;
  *
  * @package App\Controller
  */
-class EditPageController implements ControllerInterface {
+class EditPageController implements ControllerInterface
+{
     private int $articleId;
+    private SessionRepository $sessionRepository;
 
-    public function __construct(int $articleId) {
+    public function __construct(int $articleId, SessionRepository $sessionRepository)
+    {
         $this->articleId = $articleId;
+        $this->sessionRepository = $sessionRepository;
     }
 
     /**
@@ -32,18 +37,28 @@ class EditPageController implements ControllerInterface {
      * @param PDO $db The database connection object.
      * @return Response The HTTP response object containing the rendered view.
      */
-    public function __invoke(Request $req, PDO $db): Response {
-        $articleRepository = new ArticleRepository($db);
+    public function __invoke(Request $req, PDO $db): Response
+    {
+        $userId = $this->sessionRepository->get('user_id');
 
+        // ユーザーがログインしていることを確認
+        if (is_null($userId)) {
+            $this->sessionRepository->setErrors(['ログインが必要です。']);
+            return new Response(302, '', ['Location: /login']);
+        }
+
+        $articleRepository = new ArticleRepository($db);
         $article = $articleRepository->getArticleById($this->articleId);
 
-        if ($article) {
-            ob_start();
-            include __DIR__ . '/../View/edit_page.php';
-            $body = ob_get_clean();
-            return new Response(200, $body);
-        } else {
-            return new Response(404, "Article not found");
+        // 記事が存在し、かつログインユーザーのものであることを確認
+        if (is_null($article) || $article->userId !== $userId) {
+            $this->sessionRepository->setErrors(['他のユーザーの投稿は編集できません。']);
+            return new Response(302, '', ['Location: /']);
         }
+
+        ob_start();
+        include __DIR__ . '/../View/edit_page.php';
+        $body = ob_get_clean();
+        return new Response(200, $body);
     }
 }
