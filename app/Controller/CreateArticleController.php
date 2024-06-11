@@ -10,6 +10,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
 use InvalidArgumentException;
 use PDO;
+use PDOException;
 
 /**
  * Class CreateArticleController
@@ -54,6 +55,9 @@ class CreateArticleController implements ControllerInterface {
         }
 
         try{
+            // トランザクションを開始
+            $db->beginTransaction();
+
             $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
 
@@ -66,13 +70,19 @@ class CreateArticleController implements ControllerInterface {
                 $categoryRepository->insertBulk($categories);
             }
 
+            // トランザクションをコミット
+            $db->commit();
+
             return new Response(302, '', ['Location: /']);
 
         }catch (InvalidArgumentException $e){
             $_SESSION['errors'] = [$e->getMessage()];
             return new Response(302, '', ['Location: /']);
+        }catch (PDOException $e) {
+            // トランザクションをロールバック
+            $db->rollBack();
+            $_SESSION['errors'] = ['データベースエラーが発生しました。'];
+            return new Response(302, '', ['Location: /']);
         }
-
-
     }
 }
