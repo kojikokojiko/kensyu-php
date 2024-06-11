@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Dto\ArticleDetailDto;
-use App\Dto\TopPageDto;
+use App\Dto\ArticleCatalogDto;
 use App\Model\Article;
 use App\Model\Category;
 use PDO;
@@ -16,7 +16,7 @@ use PDO;
  *
  * @package App\Repository
  */
-class TopPageRepository implements RepositoryInterface
+class ArticleCatalogRepository implements RepositoryInterface
 {
     /**
      * @var PDO The PDO instance for database connection.
@@ -42,7 +42,7 @@ class TopPageRepository implements RepositoryInterface
      *
      * Retrieves all articles from the database along with their associated user information.
      *
-     * @return TopPageDto[] An array of ArticleWithUserDTO objects.
+     * @return ArticleCatalogDto[] An array of ArticleWithUserDTO objects.
      */
     public function getAllArticlesWithUser(): array {
         $stmt = $this->db->query("
@@ -54,7 +54,7 @@ class TopPageRepository implements RepositoryInterface
 
         $articles = [];
         foreach ($articlesData as $data) {
-            $articles[] = new TopPageDto($data['article_id'], $data['title'], $data['body'], $data['user_id'], $data['user_name']);
+            $articles[] = new ArticleCatalogDto($data['article_id'], $data['title'], $data['body'], $data['user_id'], $data['user_name']);
         }
 
         return $articles;
@@ -64,9 +64,9 @@ class TopPageRepository implements RepositoryInterface
      * Get an article by its ID along with user information.
      *
      * @param int $id The ID of the article.
-     * @return TopPageDto|null The article with user information or null if not found.
+     * @return ArticleCatalogDto|null The article with user information or null if not found.
      */
-    public function getArticleWithUserById(int $id): ?TopPageDto
+    public function getArticleWithUserById(int $id): ?ArticleCatalogDto
     {
         $stmt = $this->db->prepare("
             SELECT articles.id, articles.title, articles.body, articles.user_id, users.name AS user_name
@@ -78,6 +78,6 @@ class TopPageRepository implements RepositoryInterface
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data === false ? null : new TopPageDto($data['id'], $data['title'], $data['body'],$data['user_id'], $data['user_name']);
+        return $data === false ? null : new ArticleCatalogDto($data['id'], $data['title'], $data['body'],$data['user_id'], $data['user_name']);
     }
 }
