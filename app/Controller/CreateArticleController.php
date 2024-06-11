@@ -4,7 +4,9 @@ namespace App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
+use App\Model\Category;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
 use InvalidArgumentException;
 use PDO;
@@ -37,9 +39,11 @@ class CreateArticleController implements ControllerInterface {
      */
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
+        $categoryRepository = new CategoryRepository($db);
 
         $title = $req->post['title'];
         $body = $req->post['body'];
+        $categoryIds = $req->post['categoryIds'] ?? []; // カテゴリIDの配列を取得
 
         $userId=$this->sessionRepository->get('user_id');
         // ユーザーがログインしていることを確認
@@ -52,7 +56,16 @@ class CreateArticleController implements ControllerInterface {
         try{
             $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
-            // Redirect to the home page after successful creation
+
+            // カテゴリの保存
+            if (!empty($categoryIds)) {
+                $categories = [];
+                foreach ($categoryIds as $categoryId) {
+                    $categories[] = new Category((int)$categoryId, $articleId); // キャストして整数にする
+                }
+                $categoryRepository->insertBulk($categories);
+            }
+
             return new Response(302, '', ['Location: /']);
 
         }catch (InvalidArgumentException $e){

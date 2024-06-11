@@ -6,6 +6,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use InvalidArgumentException;
 use PDO;
 
@@ -37,8 +38,10 @@ class ArticleDetailController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
+        $categoryRepository = new CategoryRepository($db);
 
         $articleWithUser = $articleRepository->getArticleWithUserById($this->articleId);
+        $categories = $categoryRepository->getByArticleId($this->articleId);
 
         if (!is_null($articleWithUser)) {
             ob_start();
