@@ -74,8 +74,8 @@ class CreateArticleController implements ControllerInterface {
             $db->commit();
 
             return new Response(302, '', ['Location: /']);
-
         }catch (InvalidArgumentException $e){
+            $db->rollBack();
             $_SESSION['errors'] = [$e->getMessage()];
             return new Response(302, '', ['Location: /']);
         }catch (PDOException $e) {
