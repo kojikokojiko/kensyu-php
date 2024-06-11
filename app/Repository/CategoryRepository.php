@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Dto\ArticleWithUserDto;
+use App\Dto\TopPageDto;
 use App\Model\Article;
 use App\Model\Category;
 use PDO;

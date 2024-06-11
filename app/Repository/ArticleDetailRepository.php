@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Dto\ArticleDetailDto;
-use App\Dto\ArticleWithUserDto;
+use App\Dto\TopPageDto;
 use App\Model\Article;
 use App\Model\Category;
 use PDO;
@@ -41,7 +41,7 @@ class ArticleDetailRepository implements RepositoryInterface
      * Retrieves an article from the database by its ID.
      *
      * @param int $id The ID of the article to retrieve.
-     * @return ArticleWithUserDto|null The article with user information, or null if not found.
+     * @return TopPageDto|null The article with user information, or null if not found.
      */
     public function getArticleDetailById(int $id): ?ArticleDetailDto
     {

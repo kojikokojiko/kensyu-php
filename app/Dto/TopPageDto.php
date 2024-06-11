@@ -9,7 +9,7 @@ namespace App\Dto;
  *
  * @package App\DTO
  */
-class ArticleWithUserDto
+class TopPageDto
 {
     public function __construct(
         public int    $articleId,
