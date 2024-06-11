@@ -108,7 +108,28 @@ class ArticleRepository implements RepositoryInterface
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? new Article($data['id'], $data['title'], $data['body'],$data['user_id']) : null;
+        return $data === false ? null : new Article($data['id'], $data['title'], $data['body'],$data['user_id']);
+    }
+
+    /**
+     * Get an article by its ID along with user information.
+     *
+     * @param int $id The ID of the article.
+     * @return ArticleWithUserDTO|null The article with user information or null if not found.
+     */
+    public function getArticleWithUserById(int $id): ?ArticleWithUserDto
+    {
+        $stmt = $this->db->prepare("
+            SELECT articles.id, articles.title, articles.body, articles.user_id, users.name AS user_name
+            FROM articles
+            JOIN users ON articles.user_id = users.id
+            WHERE articles.id = :id
+        ");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $data === false ? null : new ArticleWithUserDto($data['id'], $data['title'], $data['body'],$data['user_id'], $data['user_name']);
     }
 
     /**
@@ -126,7 +147,7 @@ class ArticleRepository implements RepositoryInterface
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? new Article((int) $data['id'], $data['title'], $data['body'], (int) $data['user_id']) : null;
+        return $data === false ? null : new Article((int) $data['id'], $data['title'], $data['body'], (int) $data['user_id']);
     }
 
     /**
