@@ -108,7 +108,7 @@ class ArticleRepository implements RepositoryInterface
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data === true ? new Article($data['id'], $data['title'], $data['body'],$data['user_id']) : null;
+        return $data === false ? null : new Article($data['id'], $data['title'], $data['body'],$data['user_id']);
     }
 
     /**
@@ -129,7 +129,7 @@ class ArticleRepository implements RepositoryInterface
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data === true ? new ArticleWithUserDto($data['id'], $data['title'], $data['body'],$data['user_id'], $data['user_name']) : null;
+        return $data === false ? null : new ArticleWithUserDto($data['id'], $data['title'], $data['body'],$data['user_id'], $data['user_name']);
     }
 
     /**
@@ -147,7 +147,7 @@ class ArticleRepository implements RepositoryInterface
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data === true ? new Article((int) $data['id'], $data['title'], $data['body'], (int) $data['user_id']) : null;
+        return $data === false ? null : new Article((int) $data['id'], $data['title'], $data['body'], (int) $data['user_id']);
     }
 
     /**
