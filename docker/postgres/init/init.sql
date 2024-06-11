@@ -21,3 +21,14 @@ CREATE TABLE articles (
     deleted_at TIMESTAMPTZ
 );
 
+CREATE TABLE categories (
+    article_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (article_id, category_id),
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
+);
+
+
+

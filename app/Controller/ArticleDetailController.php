@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
+use App\Repository\ArticleDetailRepository;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use InvalidArgumentException;
 use PDO;
 
@@ -36,11 +38,11 @@ class ArticleDetailController implements ControllerInterface
      * @return Response The HTTP response object containing the rendered view.
      */
     public function __invoke(Request $req, PDO $db): Response {
-        $articleRepository = new ArticleRepository($db);
 
-        $articleWithUser = $articleRepository->getArticleWithUserById($this->articleId);
+        $articleDetailRepository = new ArticleDetailRepository($db);
+        $articleDetail = $articleDetailRepository->getArticleDetailById($this->articleId);
 
-        if (!is_null($articleWithUser)) {
+        if (!is_null($articleDetail)) {
             ob_start();
             include __DIR__ . '/../View/article_detail.php';
             $body = ob_get_clean();

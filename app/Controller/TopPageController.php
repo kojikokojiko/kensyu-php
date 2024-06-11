@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Http\Request;
 use App\Http\Response;
+use App\Model\Category;
 use App\Repository\ArticleRepository;
+use App\Repository\ArticleCatalogRepository;
 use PDO;
 use Exception;
 
@@ -29,8 +31,9 @@ class TopPageController implements ControllerInterface {
      * @throws Exception
      */
     public function __invoke(Request $req, PDO $db): Response {
-        $articleRepository = new ArticleRepository($db);
-        $articlesWithUser = $articleRepository->getAllArticlesWithUser();
+        $articleCatalogRepository = new ArticleCatalogRepository($db);
+        $articlesWithUser = $articleCatalogRepository->getAllArticlesWithUser();
+        $allCategories = Category::getAllCategories();
 
         ob_start();
         include __DIR__ . '/../View/home.php';
