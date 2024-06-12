@@ -7,6 +7,7 @@ use App\Dto\ArticleCatalogDto;
 use App\Model\Article;
 use App\Model\Category;
 use PDO;
+use PDOException;
 
 /**
  * Class ArticleRepository
@@ -104,4 +105,53 @@ class CategoryRepository implements RepositoryInterface
 
         return $categories;
     }
+
+    /**
+     * Delete all categories for an article.
+     *
+     * @param int $articleId
+     * @return void
+     */
+    public function deleteCategoriesByArticleId(int $articleId): void
+    {
+        $stmt = $this->db->prepare("
+            DELETE FROM categories 
+            WHERE article_id = :article_id
+        ");
+        $stmt->bindParam(':article_id', $articleId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Update categories for an article.
+     *
+     * @param int $articleId
+     * @param Category[] $newCategories
+     * @return void
+     */
+    public function updateCategories(int $articleId, array $newCategories): void
+    {
+        try {
+            // トランザクションを開始
+            $this->db->beginTransaction();
+
+            // 古いカテゴリを削除
+            $this->deleteCategoriesByArticleId($articleId);
+
+
+            $this->insertBulk($newCategories);
+
+            // トランザクションをコミット
+            $this->db->commit();
+        } catch (PDOException $e) {
+            // PDO例外が発生した場合はロールバック
+            $this->db->rollBack();
+            throw $e;
+        } catch (\Exception $e) {
+            // その他の例外が発生した場合もロールバック
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
 }

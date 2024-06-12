@@ -27,6 +27,19 @@ unset($_SESSION['errors']);
     <input type="hidden" name="_method" value="PUT">
     <input type="text" id="title" name="title" value="<?= htmlspecialchars($article->title) ?>" required>
     <textarea id="body" class="input-body" name="body" required><?= htmlspecialchars($article->body) ?></textarea>
+
+    <?php if (!empty($allCategories)): ?>
+        <?php foreach ($allCategories as $categoryId => $categoryName): ?>
+            <ul style="list-style-type: none;">
+                <li>
+                    <input type="checkbox" id="categoryIds" name="categoryIds[]" value="<?= htmlspecialchars($categoryId, ENT_QUOTES, 'UTF-8') ?>"
+                        <?= in_array($categoryId, $existingCategoryIds) ? 'checked' : '' ?>>
+                    <?= htmlspecialchars($categoryName, ENT_QUOTES, 'UTF-8') ?>
+                </li>
+            </ul>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
     <button type="submit" class="submit-button" id="update-button" disabled>Update</button>
 </form>
 <a class="submit-button" href="/article/<?= $article->id ?>">Cancel</a>
@@ -36,20 +49,25 @@ unset($_SESSION['errors']);
         const titleInput = document.getElementById('title');
         const bodyInput = document.getElementById('body');
         const updateButton = document.getElementById('update-button');
+        const checkboxes = document.querySelectorAll('input[name="categoryIds[]"]');
 
         const originalTitle = titleInput.value;
         const originalBody = bodyInput.value;
+        const originalCheckboxes = Array.from(checkboxes).map(checkbox => checkbox.checked);
 
         function checkForChanges() {
-            if (titleInput.value !== originalTitle || bodyInput.value !== originalBody) {
-                updateButton.disabled = false;
-            } else {
-                updateButton.disabled = true;
-            }
+            const titleChanged = titleInput.value !== originalTitle;
+            const bodyChanged = bodyInput.value !== originalBody;
+            const checkboxesChanged = Array.from(checkboxes).some((checkbox, index) => checkbox.checked !== originalCheckboxes[index]);
+
+            updateButton.disabled = !(titleChanged || bodyChanged || checkboxesChanged);
         }
 
         titleInput.addEventListener('input', checkForChanges);
         bodyInput.addEventListener('input', checkForChanges);
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', checkForChanges);
+        });
     });
 </script>
 </body>
