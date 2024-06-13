@@ -30,5 +30,12 @@ CREATE TABLE categories (
     FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
 );
 
-
+CREATE TABLE thumbnails (
+    id SERIAL PRIMARY KEY,
+    path VARCHAR NOT NULL,
+    article_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
+);
 
