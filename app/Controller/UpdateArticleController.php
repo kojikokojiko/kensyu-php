@@ -6,10 +6,14 @@ namespace App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
+use App\Model\Category;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
+use App\TransactionManager;
 use InvalidArgumentException;
 use PDO;
+use PDOException;
 
 /**
  * Class UpdateArticleController
@@ -45,8 +49,12 @@ class UpdateArticleController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response
     {
+        $transactionManager = new TransactionManager($db);
         $articleRepository = new ArticleRepository($db);
+        $categoryRepository = new CategoryRepository($db);
+
         $article = $articleRepository->getArticleByIdAndUserId($this->articleId, $this->userId);
+
 
         // 記事が存在し、かつログインユーザーのものであることを確認
         if (is_null($article)) {
@@ -56,14 +64,31 @@ class UpdateArticleController implements ControllerInterface
 
         $title = $req->post['title'];
         $body = $req->post['body'];
+        $newCategoryIds = $req->post['categoryIds'];
 
         try {
+            $transactionManager->beginTransaction();
+
             $article = new Article($this->articleId, $title, $body, $this->userId);
             $articleRepository->updateArticle($article);
+
+            // カテゴリを更新
+            $newCategories = [];
+            foreach ($newCategoryIds as $categoryId) {
+                $newCategories[] = new Category((int)$categoryId, $this->articleId);
+            }
+            $categoryRepository->updateCategories($this->articleId, $newCategories, $transactionManager);
+
+            $transactionManager->commit();
             return new Response(302, '', ['Location: /article/' . $this->articleId]);
 
         } catch (InvalidArgumentException $e) {
             $_SESSION['errors'] = [$e->getMessage()];
+            $transactionManager->rollBack();
+            return new Response(302, '', ['Location: /article/' . $this->articleId . '/edit']);
+        }catch (\RuntimeException $e) {
+            $transactionManager->rollBack();
+            $_SESSION['errors'] = ['データベースエラーが発生しました。'];
             return new Response(302, '', ['Location: /article/' . $this->articleId . '/edit']);
         }
     }

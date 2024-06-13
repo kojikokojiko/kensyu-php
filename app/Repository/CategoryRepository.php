@@ -6,7 +6,10 @@ namespace App\Repository;
 use App\Dto\ArticleCatalogDto;
 use App\Model\Article;
 use App\Model\Category;
+use App\TransactionManager;
 use PDO;
+use PDOException;
+use RuntimeException;
 
 /**
  * Class ArticleRepository
@@ -104,4 +107,52 @@ class CategoryRepository implements RepositoryInterface
 
         return $categories;
     }
+
+    /**
+     * Delete all categories for an article.
+     *
+     * @param int $articleId
+     * @return void
+     */
+    public function deleteCategoriesByArticleId(int $articleId): void
+    {
+        $stmt = $this->db->prepare("
+            DELETE FROM categories 
+            WHERE article_id = :article_id
+        ");
+        $stmt->bindParam(':article_id', $articleId, PDO::PARAM_INT);
+        $result = $stmt->execute();
+
+        if ($result === false) {
+            // エラーメッセージを取得する
+            $errorInfo = $stmt->errorInfo();
+            $errorMessage = $errorInfo[2] ?? 'Unknown error';
+
+            // RuntimeExceptionをスローする
+            throw new RuntimeException('Failed to delete categories: ' . $errorMessage);
+        }
+    }
+
+    /**
+     * Update categories for an article.
+     *
+     * @param int $articleId
+     * @param Category[] $newCategories
+     * @return void
+     */
+    public function updateCategories(int $articleId, array $newCategories, TransactionManager $transactionManager): void
+    {
+        try {
+            $transactionManager->beginTransaction();
+
+            $this->deleteCategoriesByArticleId($articleId);
+            $this->insertBulk($newCategories);
+
+            $transactionManager->commit();
+        } catch (\RuntimeException $e) {
+            $transactionManager->rollBack();
+            throw $e;
+        }
+    }
+
 }

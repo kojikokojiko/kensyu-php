@@ -5,7 +5,9 @@ namespace App\Controller;
 
 use App\Http\Request;
 use App\Http\Response;
+use App\Model\Category;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
 use PDO;
 
@@ -43,7 +45,15 @@ class EditPageController implements ControllerInterface
     public function __invoke(Request $req, PDO $db): Response
     {
         $articleRepository = new ArticleRepository($db);
+        $categoryRepository = new CategoryRepository($db);
         $article = $articleRepository->getArticleByIdAndUserId($this->articleId, $this->userId);
+
+        $allCategories=Category::getAllCategories();
+        $existingCategories = $categoryRepository->getByArticleId($this->articleId);
+
+        $existingCategoryIds = array_map(function(Category $category) {
+            return $category->categoryId;
+        }, $existingCategories);
 
         // 記事が存在し、かつログインユーザーのものであることを確認
         if (is_null($article)) {
