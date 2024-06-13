@@ -12,6 +12,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
 use InvalidArgumentException;
 use PDO;
+use PDOException;
 
 /**
  * Class UpdateArticleController
@@ -65,6 +66,8 @@ class UpdateArticleController implements ControllerInterface
 
 
         try {
+            $db->beginTransaction();
+
             $article = new Article($this->articleId, $title, $body, $this->userId);
             $articleRepository->updateArticle($article);
 
@@ -74,10 +77,17 @@ class UpdateArticleController implements ControllerInterface
                 $newCategories[] = new Category((int)$categoryId, $this->articleId);
             }
             $categoryRepository->updateCategories($this->articleId, $newCategories);
+
+            $db->commit();
             return new Response(302, '', ['Location: /article/' . $this->articleId]);
 
         } catch (InvalidArgumentException $e) {
             $_SESSION['errors'] = [$e->getMessage()];
+            $db->rollBack();
+            return new Response(302, '', ['Location: /article/' . $this->articleId . '/edit']);
+        }catch (PDOException $e) {
+            $db->rollBack();
+            $_SESSION['errors'] = ['データベースエラーが発生しました。'];
             return new Response(302, '', ['Location: /article/' . $this->articleId . '/edit']);
         }
     }
