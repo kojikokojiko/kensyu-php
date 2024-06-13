@@ -9,6 +9,7 @@ use App\Model\Category;
 use App\TransactionManager;
 use PDO;
 use PDOException;
+use RuntimeException;
 
 /**
  * Class ArticleRepository
@@ -120,7 +121,16 @@ class CategoryRepository implements RepositoryInterface
             WHERE article_id = :article_id
         ");
         $stmt->bindParam(':article_id', $articleId, PDO::PARAM_INT);
-        $stmt->execute();
+        $result = $stmt->execute();
+
+        if ($result === false) {
+            // エラーメッセージを取得する
+            $errorInfo = $stmt->errorInfo();
+            $errorMessage = $errorInfo[2] ?? 'Unknown error';
+
+            // RuntimeExceptionをスローする
+            throw new RuntimeException('Failed to delete categories: ' . $errorMessage);
+        }
     }
 
     /**
