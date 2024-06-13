@@ -41,7 +41,8 @@ class App {
             $_SERVER['REQUEST_METHOD'],
             $_SERVER['REQUEST_URI'],
             $_GET,
-            $_POST
+            $_POST,
+            $_FILES
         );
 
         $controller = Route::getController($req);
