@@ -6,6 +6,7 @@ namespace App\Repository;
 use App\Dto\ArticleCatalogDto;
 use App\Model\Article;
 use App\Model\Category;
+use App\TransactionManager;
 use PDO;
 use PDOException;
 
@@ -129,27 +130,17 @@ class CategoryRepository implements RepositoryInterface
      * @param Category[] $newCategories
      * @return void
      */
-    public function updateCategories(int $articleId, array $newCategories): void
+    public function updateCategories(int $articleId, array $newCategories, TransactionManager $transactionManager): void
     {
         try {
-            // トランザクションを開始
-            $this->db->beginTransaction();
+            $transactionManager->beginTransaction();
 
-            // 古いカテゴリを削除
             $this->deleteCategoriesByArticleId($articleId);
-
-
             $this->insertBulk($newCategories);
 
-            // トランザクションをコミット
-            $this->db->commit();
-        } catch (PDOException $e) {
-            // PDO例外が発生した場合はロールバック
-            $this->db->rollBack();
-            throw $e;
-        } catch (\Exception $e) {
-            // その他の例外が発生した場合もロールバック
-            $this->db->rollBack();
+            $transactionManager->commit();
+        } catch (\RuntimeException $e) {
+            $transactionManager->rollBack();
             throw $e;
         }
     }
