@@ -10,6 +10,7 @@ use App\Model\Category;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
+use App\TransactionManager;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
@@ -48,6 +49,7 @@ class UpdateArticleController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response
     {
+        $transactionManager = new TransactionManager($db);
         $articleRepository = new ArticleRepository($db);
         $categoryRepository = new CategoryRepository($db);
 
@@ -64,9 +66,8 @@ class UpdateArticleController implements ControllerInterface
         $body = $req->post['body'];
         $newCategoryIds = $req->post['categoryIds'];
 
-
         try {
-            $db->beginTransaction();
+            $transactionManager->beginTransaction();
 
             $article = new Article($this->articleId, $title, $body, $this->userId);
             $articleRepository->updateArticle($article);
@@ -76,17 +77,17 @@ class UpdateArticleController implements ControllerInterface
             foreach ($newCategoryIds as $categoryId) {
                 $newCategories[] = new Category((int)$categoryId, $this->articleId);
             }
-            $categoryRepository->updateCategories($this->articleId, $newCategories);
+            $categoryRepository->updateCategories($this->articleId, $newCategories, $transactionManager);
 
-            $db->commit();
+            $transactionManager->commit();
             return new Response(302, '', ['Location: /article/' . $this->articleId]);
 
         } catch (InvalidArgumentException $e) {
             $_SESSION['errors'] = [$e->getMessage()];
-            $db->rollBack();
+            $transactionManager->rollBack();
             return new Response(302, '', ['Location: /article/' . $this->articleId . '/edit']);
-        }catch (PDOException $e) {
-            $db->rollBack();
+        }catch (\RuntimeException $e) {
+            $transactionManager->rollBack();
             $_SESSION['errors'] = ['データベースエラーが発生しました。'];
             return new Response(302, '', ['Location: /article/' . $this->articleId . '/edit']);
         }
