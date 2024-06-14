@@ -5,7 +5,7 @@ namespace App\Utils;
 
 use InvalidArgumentException;
 
-class FileUploader
+class FileManager
 {
     /**
      * Save the uploaded file to the specified directory.
@@ -76,5 +76,24 @@ class FileUploader
 
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         return $finfo->file($filePath);
+    }
+
+    /**
+     * Delete the specified file.
+     *
+     * @param string $filePath The path to the file to delete.
+     * @throws InvalidArgumentException If the file could not be deleted.
+     */
+    public static function deleteFile(string $filePath): void
+    {
+        $fullPath = dirname(__DIR__, 2) . '/public' . $filePath;
+
+        if (!file_exists($fullPath)) {
+            throw new InvalidArgumentException('ファイルが存在しません。');
+        }
+
+        if (!unlink($fullPath)) {
+            throw new InvalidArgumentException('ファイルの削除に失敗しました。');
+        }
     }
 }

@@ -6,6 +6,8 @@ use App\Http\Response;
 use App\Model\Article;
 use App\Repository\ArticleRepository;
 use App\Repository\SessionRepository;
+use App\Repository\ThumbnailRepository;
+use App\Utils\FileManager;
 use InvalidArgumentException;
 use PDO;
 
@@ -39,6 +41,7 @@ class DeleteArticleController implements ControllerInterface {
     public function __invoke(Request $req, PDO $db): Response {
 
         $articleRepository = new ArticleRepository($db);
+        $thumbnailRepository = new ThumbnailRepository($db);
         $article = $articleRepository->getArticleByIdAndUserId($this->articleId, $this->userId);
 
         // 記事が存在し、かつログインユーザーのものであることを確認
@@ -46,15 +49,32 @@ class DeleteArticleController implements ControllerInterface {
             $this->sessionRepository->setErrors(['他のユーザーの投稿は編集できません。']);
             return new Response(302, '', ['Location: /']);
         }
-        // Delete the article by its ID.
-        $rowsDeleted = $articleRepository->deleteArticle($this->articleId);
 
-        if ($rowsDeleted > 0) {
-            // If deletion is successful, redirect to the article list page.
-            return new Response(302, '', ['Location: /']);
-        } else {
-            // If the article was not found or already deleted, return a 404 response.
-            return new Response(404, "Article not found or already deleted");
+        // トランザクションの開始
+        $db->beginTransaction();
+        try {
+            // 記事の削除
+            $rowsDeleted = $articleRepository->deleteArticle($this->articleId);
+            // サムネイルの削除
+            $thumbnailRepository->deleteThumbnailByArticleId($this->articleId);
+            FileManager::deleteFile($article->thumbnailPath);
+            if ($rowsDeleted > 0) {
+                // トランザクションのコミット
+                $db->commit();
+                // If deletion is successful, redirect to the article list page.
+                return new Response(302, '', ['Location: /']);
+            } else {
+                // トランザクションのロールバック
+                $db->rollBack();
+                // If the article was not found or already deleted, return a 404 response.
+                return new Response(404, "Article not found or already deleted");
+            }
+        } catch (\RunTimeException $e) {
+            // エラーが発生した場合、トランザクションのロールバック
+            $db->rollBack();
+            // エラーの設定
+            $this->sessionRepository->setErrors(['記事の削除中にエラーが発生しました。']);
+            return new Response(500, "Internal Server Error");
         }
     }
 }
