@@ -17,6 +17,7 @@ class ArticleDetailDto
         public string $body,
         public int    $userId,
         public string $userName,
+        public ?string $thumbnailPath,
         public array  $categories
     )
     {

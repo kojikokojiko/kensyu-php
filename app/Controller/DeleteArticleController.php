@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
+use App\Repository\ArticleDetailRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\SessionRepository;
 use App\Repository\ThumbnailRepository;
@@ -40,9 +41,10 @@ class DeleteArticleController implements ControllerInterface {
      */
     public function __invoke(Request $req, PDO $db): Response {
 
+        $articleDetailRepository = new ArticleDetailRepository($db);
         $articleRepository = new ArticleRepository($db);
         $thumbnailRepository = new ThumbnailRepository($db);
-        $article = $articleRepository->getArticleByIdAndUserId($this->articleId, $this->userId);
+        $article = $articleDetailRepository->getArticleDetailByIdAndUserId($this->articleId, $this->userId);
 
         // 記事が存在し、かつログインユーザーのものであることを確認
         if (is_null($article)) {
