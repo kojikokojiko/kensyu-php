@@ -12,7 +12,8 @@
         "slim/slim": "4.*",
         "slim/psr7": "^1.6",
         "illuminate/database": "^11.7",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+      "ext-fileinfo": "*"
     },
     "autoload": {
         "psr-4": {

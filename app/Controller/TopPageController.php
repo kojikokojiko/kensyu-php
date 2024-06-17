@@ -32,7 +32,7 @@ class TopPageController implements ControllerInterface {
      */
     public function __invoke(Request $req, PDO $db): Response {
         $articleCatalogRepository = new ArticleCatalogRepository($db);
-        $articlesWithUser = $articleCatalogRepository->getAllArticlesWithUser();
+        $articlesCatalog = $articleCatalogRepository->getArticleCatalogu();
         $allCategories = Category::getAllCategories();
 
         ob_start();

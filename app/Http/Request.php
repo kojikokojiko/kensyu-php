@@ -24,7 +24,8 @@ readonly class Request {
         public string $method,
         public string $uri,
         public array  $get,
-        public array  $post
+        public array  $post,
+        public array  $files
     ) {}
 
 }

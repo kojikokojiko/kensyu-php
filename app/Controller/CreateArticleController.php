@@ -8,6 +8,8 @@ use App\Model\Category;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
+use App\Repository\ThumbnailRepository;
+use App\Utils\FileUploader;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
@@ -41,10 +43,13 @@ class CreateArticleController implements ControllerInterface {
     public function __invoke(Request $req, PDO $db): Response {
         $articleRepository = new ArticleRepository($db);
         $categoryRepository = new CategoryRepository($db);
+        $thumbnailRepository = new ThumbnailRepository($db);
 
         $title = $req->post['title'];
         $body = $req->post['body'];
         $categoryIds = $req->post['categoryIds'] ?? []; // カテゴリIDの配列を取得
+        $thumbnail = $req->files['thumbnails']; // ファイルを取得
+
 
         $userId=$this->sessionRepository->get('user_id');
         // ユーザーがログインしていることを確認
@@ -60,6 +65,9 @@ class CreateArticleController implements ControllerInterface {
 
             $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
+            $thumbnailPath = FileUploader::saveFile($thumbnail, 'thumbnails');
+            // サムネイル情報の保存
+            $thumbnailRepository->createThumbnail($articleId, $thumbnailPath);
 
             // カテゴリの保存
             if (!empty($categoryIds)) {

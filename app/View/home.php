@@ -52,6 +52,9 @@ if (!empty($_SESSION['errors'])) {
 
     <label for="body">Body:</label><br>
     <textarea id="body" name="body" required></textarea><br><br>
+    <label for="thumbnail">Thumbnail:</label><br>
+    <input type="file" id="thumbnails" name="thumbnails" accept="image/*" required><br><br>
+
     <!---->
     <!--    <label for="thumbnail">Thumbnail Image:</label><br>-->
     <!--    <input type="file" id="thumbnail" name="thumbnail" required><br><br>-->
@@ -78,14 +81,17 @@ if (!empty($_SESSION['errors'])) {
 
 <!-- Article List -->
 <h2>Articles</h2>
-<?php if (!empty($articlesWithUser)): ?>
+<?php if (!empty($articlesCatalog)): ?>
     <ul>
-        <?php foreach ($articlesWithUser as $article): ?>
+        <?php foreach ($articlesCatalog as $article): ?>
             <li>
                 <h2><?= htmlspecialchars($article->title, ENT_QUOTES, 'UTF-8') ?></h2>
                 <p><?= nl2br(htmlspecialchars($article->body, ENT_QUOTES, 'UTF-8')) ?></p>
                 <p>UserId:<?= nl2br(htmlspecialchars($article->userId, ENT_QUOTES, 'UTF-8')) ?></p>
                 <p>UserName:<?= nl2br(htmlspecialchars($article->userName, ENT_QUOTES, 'UTF-8')) ?></p>
+                <?php if (!empty($article->thumbnailPath)): ?>
+                    <img src="<?= htmlspecialchars($article->thumbnailPath, ENT_QUOTES, 'UTF-8') ?>" alt="Thumbnail" style="width:100px;height:100px;">
+                <?php endif; ?>
                 <a href="/article/<?= $article->articleId ?>">Read more</a>
                 <a href="/article/<?= $article->articleId ?>/edit">Edit</a>
                 <form action="/article/<?= $article->articleId ?>" method="POST">

@@ -44,17 +44,25 @@ class ArticleCatalogRepository implements RepositoryInterface
      *
      * @return ArticleCatalogDto[] An array of ArticleWithUserDTO objects.
      */
-    public function getAllArticlesWithUser(): array {
+    public function getArticleCatalogu(): array {
         $stmt = $this->db->query("
-            SELECT articles.id as article_id, articles.title, articles.body, articles.user_id, users.name as user_name 
-            FROM articles
-            JOIN users ON articles.user_id = users.id
+            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name, t.path as thumbnail_path
+            FROM articles a
+            JOIN users u ON a.user_id = u.id
+            LEFT JOIN thumbnails t ON a.id = t.article_id
         ");
         $articlesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $articles = [];
         foreach ($articlesData as $data) {
-            $articles[] = new ArticleCatalogDto($data['article_id'], $data['title'], $data['body'], $data['user_id'], $data['user_name']);
+            $articles[] = new ArticleCatalogDto(
+                $data['article_id'],
+                $data['title'],
+                $data['body'],
+                $data['user_id'],
+                $data['user_name'],
+                $data['thumbnail_path'] ?? null // サムネイルが存在しない場合はnullを設定
+            );
         }
 
         return $articles;
