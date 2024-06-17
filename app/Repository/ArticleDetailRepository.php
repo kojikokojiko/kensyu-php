@@ -52,6 +52,7 @@ class ArticleDetailRepository implements RepositoryInterface
                 articles.body, 
                 articles.user_id, 
                 users.name AS user_name,
+                thumbnails.path AS thumbnail_path,
                 ARRAY_AGG(categories.category_id) AS category_ids
             FROM 
                 articles
