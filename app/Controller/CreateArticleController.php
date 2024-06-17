@@ -5,11 +5,13 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Model\Category;
+use App\Repository\ArticleImagesRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
 use App\Repository\ThumbnailRepository;
 use App\Utils\FileManager;
+use Exception;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
@@ -44,12 +46,13 @@ class CreateArticleController implements ControllerInterface {
         $articleRepository = new ArticleRepository($db);
         $categoryRepository = new CategoryRepository($db);
         $thumbnailRepository = new ThumbnailRepository($db);
+        $articleImagesRepository= new ArticleImagesRepository($db);
 
         $title = $req->post['title'];
         $body = $req->post['body'];
         $categoryIds = $req->post['categoryIds'] ?? []; // カテゴリIDの配列を取得
         $thumbnail = $req->files['thumbnails']; // ファイルを取得
-
+        $images = $req->files['article_images']; // 複数画像ファイルを取得
 
         $userId=$this->sessionRepository->get('user_id');
         // ユーザーがログインしていることを確認
@@ -69,6 +72,14 @@ class CreateArticleController implements ControllerInterface {
             // サムネイル情報の保存
             $thumbnailRepository->createThumbnail($articleId, $thumbnailPath);
 
+            // 複数画像の保存
+            $imagePaths = [];
+            foreach ($images as $image) {
+                $imagePath = FileManager::saveFile($image, 'article_images');
+                $imagePaths[] = $imagePath;
+            }
+            $articleImagesRepository->createImages($articleId, $imagePaths);
+
             // カテゴリの保存
             if (!empty($categoryIds)) {
                 $categories = [];
@@ -82,14 +93,9 @@ class CreateArticleController implements ControllerInterface {
             $db->commit();
 
             return new Response(302, '', ['Location: /']);
-        }catch (InvalidArgumentException $e){
+        }catch (Exception $e){
             $db->rollBack();
             $_SESSION['errors'] = [$e->getMessage()];
-            return new Response(302, '', ['Location: /']);
-        }catch (PDOException $e) {
-            // トランザクションをロールバック
-            $db->rollBack();
-            $_SESSION['errors'] = ['データベースエラーが発生しました。'];
             return new Response(302, '', ['Location: /']);
         }
     }
