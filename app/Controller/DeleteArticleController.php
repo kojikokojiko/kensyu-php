@@ -59,21 +59,23 @@ class DeleteArticleController implements ControllerInterface {
             $db->beginTransaction();
             // 記事の削除
             $rowsDeleted = $articleRepository->deleteArticle($this->articleId);
-            // サムネイルの削除
-            $thumbnailRepository->deleteThumbnailByArticleId($this->articleId);
-            FileManager::deleteFile($article->thumbnailPath);
-            if ($rowsDeleted > 0) {
-                // トランザクションのコミット
-                $db->commit();
-                // If deletion is successful, redirect to the article list page.
-                return new Response(302, '', ['Location: /']);
-            } else {
+            if ($rowsDeleted <= 0) {
                 // トランザクションのロールバック
                 $db->rollBack();
                 // If the article was not found or already deleted, return a 404 response.
-                return new Response(404, "Article not found or already deleted");
+                return new Response(404, "記事が見つからないか、既に削除されています。");
             }
-        } catch (\RunTimeException $e) {
+
+            // サムネイルの削除
+            $thumbnailRepository->deleteThumbnailByArticleId($this->articleId);
+            FileManager::deleteFile($article->thumbnailPath);
+
+            // トランザクションのコミット
+            $db->commit();
+
+            // If deletion is successful, redirect to the article list page.
+            return new Response(302, '', ['Location: /']);
+        } catch (\Exception $e) {
             // エラーが発生した場合、トランザクションのロールバック
             $db->rollBack();
             // エラーの設定
