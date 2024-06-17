@@ -17,6 +17,11 @@ class FileUploader
      */
     public static function saveFile(array $file, string $type): string
     {
+        $allowedMimeTypes = [
+            'thumbnails' => ['image/jpeg', 'image/png', 'image/gif'],
+            'article_images' => ['image/jpeg', 'image/png', 'image/gif'],
+        ];
+
         $baseDir = dirname(__DIR__, 2) . '/public/uploads/';
 
         // ファイルの種類に応じてディレクトリを設定
@@ -31,6 +36,14 @@ class FileUploader
                 throw new InvalidArgumentException('無効なファイルタイプです。');
         }
 
+        // ファイルのMIMEタイプを取得
+        $mimeType = self::getMimeType($file['tmp_name']);
+
+        // MIMEタイプを検証
+        if (!in_array($mimeType, $allowedMimeTypes[$type])) {
+            throw new InvalidArgumentException('無効なファイルタイプです。許可されているタイプ: ' . implode(', ', $allowedMimeTypes[$type]));
+        }
+
         // ディレクトリが存在しない場合は作成
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
@@ -43,5 +56,17 @@ class FileUploader
         }
 
         return '/uploads/' . $type . '/' . basename($file['name']);
+    }
+
+    /**
+     * Get the MIME type of a file.
+     *
+     * @param string $filePath The path to the file.
+     * @return string The MIME type of the file.
+     */
+    private static function getMimeType(string $filePath): string
+    {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        return $finfo->file($filePath);
     }
 }
