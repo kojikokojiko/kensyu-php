@@ -66,6 +66,8 @@ class CreateArticleController implements ControllerInterface {
             $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
             $thumbnailPath = FileUploader::saveFile($thumbnail, 'thumbnails');
+            // サムネイル情報の保存
+            $thumbnailRepository->createThumbnail($articleId, $thumbnailPath);
 
             // カテゴリの保存
             if (!empty($categoryIds)) {
@@ -75,8 +77,6 @@ class CreateArticleController implements ControllerInterface {
                 }
                 $categoryRepository->insertBulk($categories);
             }
-            // サムネイル情報の保存
-            $thumbnailRepository->createThumbnail($articleId, $thumbnailPath);
 
             // トランザクションをコミット
             $db->commit();
