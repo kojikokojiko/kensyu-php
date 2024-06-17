@@ -54,6 +54,7 @@ class ArticleDetailRepository implements RepositoryInterface
                 users.name AS user_name,
                 thumbnails.path AS thumbnail_path,
                 ARRAY_AGG(categories.category_id) AS category_ids
+                ARRAY_AGG(DISTINCT article_images.path) AS image_paths
             FROM 
                 articles
             JOIN 
@@ -62,6 +63,8 @@ class ArticleDetailRepository implements RepositoryInterface
                 thumbnails ON articles.id = thumbnails.article_id
             LEFT JOIN 
                 categories ON articles.id = categories.article_id
+            LEFT JOIN
+                article_images ON articles.id = article_images.article_id
             WHERE 
                 articles.id = :id
             GROUP BY 
@@ -88,6 +91,7 @@ class ArticleDetailRepository implements RepositoryInterface
         $userName = $data['user_name'];
         $thumbnailPath = $data['thumbnail_path'];
         $categories = [];
+        $imagePaths = [];
 
         if (!empty($data['category_ids'])) {
             $categoryIds = trim($data['category_ids'], '{}'); // PostgreSQLの配列形式から波括弧を除去
@@ -97,6 +101,10 @@ class ArticleDetailRepository implements RepositoryInterface
             }
         }
 
+        if (!empty($data['image_paths'])) {
+            $imagePaths = array_map('trim', explode(',', trim($data['image_paths'], '{}'))); // PostgreSQLの配列形式から波括弧を除去
+        }
+
         return new ArticleDetailDto(
             $articleId,
             $title,
@@ -104,7 +112,8 @@ class ArticleDetailRepository implements RepositoryInterface
             $userId,
             $userName,
             $thumbnailPath,
-            $categories
+            $categories,
+            $imagePaths
         );
     }
 
