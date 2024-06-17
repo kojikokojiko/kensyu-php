@@ -35,10 +35,13 @@ class FileUploader
             default:
                 throw new InvalidArgumentException('無効なファイルタイプです。');
         }
+        // ファイルがアップロードされているか確認
+        if (empty($file['tmp_name'])) {
+            throw new InvalidArgumentException('ファイルがアップロードされていません。');
+        }
 
         // ファイルのMIMEタイプを取得
         $mimeType = self::getMimeType($file['tmp_name']);
-
         // MIMEタイプを検証
         if (!in_array($mimeType, $allowedMimeTypes[$type])) {
             throw new InvalidArgumentException('無効なファイルタイプです。許可されているタイプ: ' . implode(', ', $allowedMimeTypes[$type]));
@@ -63,9 +66,14 @@ class FileUploader
      *
      * @param string $filePath The path to the file.
      * @return string The MIME type of the file.
+     * @throws InvalidArgumentException If the file path is empty.
      */
     private static function getMimeType(string $filePath): string
     {
+        if (empty($filePath)) {
+            throw new InvalidArgumentException('ファイルパスが空です。');
+        }
+
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         return $finfo->file($filePath);
     }
