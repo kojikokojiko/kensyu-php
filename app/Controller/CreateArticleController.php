@@ -5,16 +5,14 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Model\Article;
 use App\Model\Category;
-use App\Repository\ArticleImagesRepository;
+use App\Repository\ArticleImageRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
 use App\Repository\ThumbnailRepository;
 use App\Utils\FileManager;
 use Exception;
-use InvalidArgumentException;
 use PDO;
-use PDOException;
 
 /**
  * Class CreateArticleController
@@ -46,7 +44,7 @@ class CreateArticleController implements ControllerInterface {
         $articleRepository = new ArticleRepository($db);
         $categoryRepository = new CategoryRepository($db);
         $thumbnailRepository = new ThumbnailRepository($db);
-        $articleImagesRepository= new ArticleImagesRepository($db);
+        $articleImageRepository= new ArticleImageRepository($db);
 
         $title = $req->post['title'];
         $body = $req->post['body'];
@@ -74,11 +72,20 @@ class CreateArticleController implements ControllerInterface {
 
             // 複数画像の保存
             $imagePaths = [];
-            foreach ($images as $image) {
+            foreach ($images['tmp_name'] as $index => $tmpName) {
+                $image = [
+                    'name' => $images['name'][$index],
+                    'full_path' => $images['full_path'][$index],
+                    'type' => $images['type'][$index],
+                    'tmp_name' => $images['tmp_name'][$index],
+                    'error' => $images['error'][$index],
+                    'size' => $images['size'][$index]
+                ];
+
                 $imagePath = FileManager::saveFile($image, 'article_images');
                 $imagePaths[] = $imagePath;
             }
-            $articleImagesRepository->createImages($articleId, $imagePaths);
+            $articleImageRepository->createImages($articleId, $imagePaths);
 
             // カテゴリの保存
             if (!empty($categoryIds)) {

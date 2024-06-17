@@ -46,34 +46,54 @@ class ArticleDetailRepository implements RepositoryInterface
     public function getArticleDetailById(int $id): ?ArticleDetailDto
     {
         $stmt = $this->db->prepare("
+        WITH category_ids AS (
             SELECT 
-                articles.id AS article_id, 
-                articles.title, 
-                articles.body, 
-                articles.user_id, 
-                users.name AS user_name,
-                thumbnails.path AS thumbnail_path,
-                ARRAY_AGG(categories.category_id) AS category_ids
-                ARRAY_AGG(DISTINCT article_images.path) AS image_paths
+                article_id, 
+                ARRAY_AGG(DISTINCT category_id) AS category_ids
             FROM 
-                articles
-            JOIN 
-                users ON articles.user_id = users.id
-            JOIN 
-                thumbnails ON articles.id = thumbnails.article_id
-            LEFT JOIN 
-                categories ON articles.id = categories.article_id
-            LEFT JOIN
-                article_images ON articles.id = article_images.article_id
-            WHERE 
-                articles.id = :id
+                categories
             GROUP BY 
-                articles.id, 
-                articles.title, 
-                articles.body, 
-                articles.user_id, 
-                users.name,
-                thumbnails.path
+                article_id
+        ),
+        image_paths AS (
+            SELECT 
+                article_id, 
+                ARRAY_AGG(DISTINCT path) AS image_paths
+            FROM 
+                article_images
+            GROUP BY 
+                article_id
+        )
+        SELECT 
+            articles.id AS article_id, 
+            articles.title, 
+            articles.body, 
+            articles.user_id, 
+            users.name AS user_name,
+            thumbnails.path AS thumbnail_path,
+            COALESCE(category_ids.category_ids, '{}') AS category_ids,
+            COALESCE(image_paths.image_paths, '{}') AS image_paths
+        FROM 
+            articles
+        JOIN 
+            users ON articles.user_id = users.id
+        JOIN 
+            thumbnails ON articles.id = thumbnails.article_id
+        LEFT JOIN 
+            category_ids ON articles.id = category_ids.article_id
+        LEFT JOIN
+            image_paths ON articles.id = image_paths.article_id
+        WHERE 
+            articles.id = :id   
+        GROUP BY 
+            articles.id, 
+            articles.title, 
+            articles.body, 
+            articles.user_id, 
+            users.name,
+            thumbnails.path,
+            category_ids.category_ids,
+            image_paths.image_paths
         ");
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);

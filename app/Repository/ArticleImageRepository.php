@@ -6,7 +6,7 @@ namespace App\Repository;
 use App\Model\ArticleImage;
 use PDO;
 
-class ArticleImagesRepository implements RepositoryInterface
+class ArticleImageRepository implements RepositoryInterface
 {
     private PDO $db;
 

@@ -16,6 +16,11 @@
     <?php if (!empty($articleDetail->thumbnailPath)): ?>
         <img src="<?= htmlspecialchars($articleDetail->thumbnailPath, ENT_QUOTES, 'UTF-8') ?>" alt="Thumbnail" style="width:100px;height:100px;">
     <?php endif; ?>
+    <div>Images:
+        <?php foreach ($articleDetail->imagePaths as $imagePath): ?>
+            <img src="<?= htmlspecialchars($imagePath, ENT_QUOTES, 'UTF-8') ?>" alt="Article Image" style="width:100px;height:100px;">
+        <?php endforeach; ?>
+    </div>
     <?php if (!empty($articleDetail->categories)): ?>
         <div>Categories:
             <?php foreach ($articleDetail->categories as $category): ?>
