@@ -84,16 +84,7 @@ class ArticleDetailRepository implements RepositoryInterface
         LEFT JOIN
             image_paths ON articles.id = image_paths.article_id
         WHERE 
-            articles.id = :id   
-        GROUP BY 
-            articles.id, 
-            articles.title, 
-            articles.body, 
-            articles.user_id, 
-            users.name,
-            thumbnails.path,
-            category_ids.category_ids,
-            image_paths.image_paths
+            articles.id = :id
         ");
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
