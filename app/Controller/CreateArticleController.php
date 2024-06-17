@@ -9,7 +9,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\SessionRepository;
 use App\Repository\ThumbnailRepository;
-use App\Utils\FileUploader;
+use App\Utils\FileManager;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
@@ -65,7 +65,7 @@ class CreateArticleController implements ControllerInterface {
 
             $article= new Article(null, $title, $body, $userId);
             $articleId = $articleRepository->createArticle($article);
-            $thumbnailPath = FileUploader::saveFile($thumbnail, 'thumbnails');
+            $thumbnailPath = FileManager::saveFile($thumbnail, 'thumbnails');
             // サムネイル情報の保存
             $thumbnailRepository->createThumbnail($articleId, $thumbnailPath);
 
