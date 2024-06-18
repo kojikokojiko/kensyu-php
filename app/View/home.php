@@ -89,7 +89,12 @@ if (!empty($_SESSION['errors'])) {
                 <h2><?= htmlspecialchars($article->title, ENT_QUOTES, 'UTF-8') ?></h2>
                 <p><?= nl2br(htmlspecialchars($article->body, ENT_QUOTES, 'UTF-8')) ?></p>
                 <p>UserId:<?= nl2br(htmlspecialchars($article->userId, ENT_QUOTES, 'UTF-8')) ?></p>
-                <p>UserName:<?= nl2br(htmlspecialchars($article->userName, ENT_QUOTES, 'UTF-8')) ?></p>
+                <div style="display: flex; align-items: center;">
+                    <?php if (!empty($article->profileImagePath)): ?>
+                        <img src="<?= htmlspecialchars($article->profileImagePath, ENT_QUOTES, 'UTF-8') ?>" alt="ProfileImage" style="width:100px;height:100px;border-radius:50%; margin-right: 10px;">
+                    <?php endif; ?>
+                    <p>UserName: <?= nl2br(htmlspecialchars($article->userName, ENT_QUOTES, 'UTF-8')) ?></p>
+                </div>
                 <?php if (!empty($article->thumbnailPath)): ?>
                     <img src="<?= htmlspecialchars($article->thumbnailPath, ENT_QUOTES, 'UTF-8') ?>" alt="Thumbnail" style="width:100px;height:100px;">
                 <?php endif; ?>

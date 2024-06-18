@@ -20,6 +20,7 @@ class FileManager
         $allowedMimeTypes = [
             'thumbnails' => ['image/jpeg', 'image/png', 'image/gif'],
             'article_images' => ['image/jpeg', 'image/png', 'image/gif'],
+            'profile_image' => ['image/jpeg', 'image/png', 'image/gif'],
         ];
 
         $baseDir = dirname(__DIR__, 2) . '/public/uploads/';
@@ -31,6 +32,9 @@ class FileManager
                 break;
             case 'article_images':
                 $uploadDir = $baseDir . 'article_images/';
+                break;
+            case 'profile_image':
+                $uploadDir = $baseDir . 'profile_image/';
                 break;
             default:
                 throw new InvalidArgumentException('無効なファイルタイプです。');

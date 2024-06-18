@@ -20,10 +20,11 @@ class UserRepository implements RepositoryInterface
 
     public function createUser(User $user): int
     {
-        $stmt = $this->db->prepare('INSERT INTO users (name, email, password) VALUES (:name, :email, :password) RETURNING id');
+        $stmt = $this->db->prepare('INSERT INTO users (name, email, password, profile_image_path) VALUES (:name, :email, :password, :profile_image_path) RETURNING id');
         $stmt->bindValue(':name', $user->name->value);
         $stmt->bindValue(':email', $user->email->value);
         $stmt->bindValue(':password', $user->password->value);
+        $stmt->bindValue(':profile_image_path', $user->profileImagePath, PDO::PARAM_STR);
         $stmt->execute();
 
         return (int)$stmt->fetchColumn();
@@ -42,6 +43,7 @@ class UserRepository implements RepositoryInterface
                 new UserName($row['name']),
                 new Email($row['email']),
                 new Password($row['password']),
+                $row['profile_image_path'] // 追加
             );
         }
         return null;
