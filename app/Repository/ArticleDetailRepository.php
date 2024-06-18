@@ -70,6 +70,7 @@ class ArticleDetailRepository implements RepositoryInterface
             articles.body, 
             articles.user_id, 
             users.name AS user_name,
+            users.profile_image_path AS profile_image_path,
             thumbnails.path AS thumbnail_path,
             COALESCE(category_ids.category_ids, '{}') AS category_ids,
             COALESCE(image_paths.image_paths, '{}') AS image_paths
@@ -100,6 +101,7 @@ class ArticleDetailRepository implements RepositoryInterface
         $body = $data['body'];
         $userId = (int)$data['user_id'];
         $userName = $data['user_name'];
+        $profileImagePath = $data['profile_image_path'];
         $thumbnailPath = $data['thumbnail_path'];
         $categories = [];
         $imagePaths = [];
@@ -122,6 +124,7 @@ class ArticleDetailRepository implements RepositoryInterface
             $body,
             $userId,
             $userName,
+            $profileImagePath,
             $thumbnailPath,
             $categories,
             $imagePaths
