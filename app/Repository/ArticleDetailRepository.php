@@ -141,31 +141,45 @@ class ArticleDetailRepository implements RepositoryInterface
     public function getArticleDetailByIdAndUserId(int $id, int $userId): ?ArticleDetailDto
     {
         $stmt = $this->db->prepare("
+        WITH category_ids AS (
             SELECT 
-                articles.id AS article_id, 
-                articles.title, 
-                articles.body, 
-                articles.user_id, 
-                users.name AS user_name,
-                thumbnails.path AS thumbnail_path,
-                ARRAY_AGG(categories.category_id) AS category_ids
+                article_id, 
+                ARRAY_AGG(DISTINCT category_id) AS category_ids
             FROM 
-                articles
-            JOIN 
-                users ON articles.user_id = users.id
-            JOIN 
-                thumbnails ON articles.id = thumbnails.article_id
-            LEFT JOIN 
-                categories ON articles.id = categories.article_id
-            WHERE 
-                articles.id = :id AND articles.user_id = :user_id
+                categories
             GROUP BY 
-                articles.id, 
-                articles.title, 
-                articles.body, 
-                articles.user_id, 
-                users.name,
-                thumbnails.path
+                article_id
+        ),
+        image_paths AS (
+            SELECT 
+                article_id, 
+                ARRAY_AGG(DISTINCT path) AS image_paths
+            FROM 
+                article_images
+            GROUP BY 
+                article_id
+        )
+        SELECT 
+            articles.id AS article_id, 
+            articles.title, 
+            articles.body, 
+            articles.user_id, 
+            users.name AS user_name,
+            thumbnails.path AS thumbnail_path,
+            COALESCE(category_ids.category_ids, '{}') AS category_ids,
+            COALESCE(image_paths.image_paths, '{}') AS image_paths
+        FROM 
+            articles
+        JOIN 
+            users ON articles.user_id = users.id
+        JOIN 
+            thumbnails ON articles.id = thumbnails.article_id
+        LEFT JOIN 
+            category_ids ON articles.id = category_ids.article_id
+        LEFT JOIN
+            image_paths ON articles.id = image_paths.article_id
+        WHERE 
+            articles.id = :id AND articles.user_id = :user_id
         ");
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -184,6 +198,7 @@ class ArticleDetailRepository implements RepositoryInterface
         $userName = $data['user_name'];
         $thumbnailPath = $data['thumbnail_path'];
         $categories = [];
+        $imagePaths = [];
 
         if (!empty($data['category_ids'])) {
             $categoryIds = trim($data['category_ids'], '{}'); // PostgreSQLの配列形式から波括弧を除去
@@ -193,6 +208,10 @@ class ArticleDetailRepository implements RepositoryInterface
             }
         }
 
+        if (!empty($data['image_paths'])) {
+            $imagePaths = array_map('trim', explode(',', trim($data['image_paths'], '{}'))); // PostgreSQLの配列形式から波括弧を除去
+        }
+
         return new ArticleDetailDto(
             $articleId,
             $title,
@@ -200,7 +219,8 @@ class ArticleDetailRepository implements RepositoryInterface
             $userId,
             $userName,
             $thumbnailPath,
-            $categories
+            $categories,
+            $imagePaths
         );
     }
 }
