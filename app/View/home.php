@@ -54,7 +54,8 @@ if (!empty($_SESSION['errors'])) {
     <textarea id="body" name="body" required></textarea><br><br>
     <label for="thumbnail">Thumbnail:</label><br>
     <input type="file" id="thumbnails" name="thumbnails" accept="image/*" required><br><br>
-
+    <label for="article_images">Images:</label><br>
+    <input type="file" id="article_images" name="article_images[]" multiple><br><br>
     <!---->
     <!--    <label for="thumbnail">Thumbnail Image:</label><br>-->
     <!--    <input type="file" id="thumbnail" name="thumbnail" required><br><br>-->

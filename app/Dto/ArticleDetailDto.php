@@ -12,12 +12,14 @@ namespace App\Dto;
 class ArticleDetailDto
 {
     public function __construct(
-        public int    $articleId,
-        public string $title,
-        public string $body,
-        public int    $userId,
-        public string $userName,
-        public array  $categories
+        public int     $articleId,
+        public string  $title,
+        public string  $body,
+        public int     $userId,
+        public string  $userName,
+        public ?string $thumbnailPath,
+        public array   $categories,
+        public array   $imagePaths
     )
     {
     }
