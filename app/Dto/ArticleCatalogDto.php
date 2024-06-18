@@ -12,11 +12,12 @@ namespace App\Dto;
 class ArticleCatalogDto
 {
     public function __construct(
-        public int    $articleId,
-        public string $title,
-        public string $body,
-        public int    $userId,
-        public string $userName,
+        public int     $articleId,
+        public string  $title,
+        public string  $body,
+        public int     $userId,
+        public string  $userName,
+        public string  $profileImagePath,
         public ?string $thumbnailPath // サムネイルパスは存在しない場合もあるのでnullableにする
     )
     {

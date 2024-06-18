@@ -46,7 +46,7 @@ class ArticleCatalogRepository implements RepositoryInterface
      */
     public function getArticleCatalogu(): array {
         $stmt = $this->db->query("
-            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name, t.path as thumbnail_path
+            SELECT a.id as article_id, a.title, a.body, a.user_id, u.name as user_name, u.profile_image_path, t.path as thumbnail_path
             FROM articles a
             JOIN users u ON a.user_id = u.id
             LEFT JOIN thumbnails t ON a.id = t.article_id
@@ -61,6 +61,7 @@ class ArticleCatalogRepository implements RepositoryInterface
                 $data['body'],
                 $data['user_id'],
                 $data['user_name'],
+                $data['profile_image_path'],
                 $data['thumbnail_path'] ?? null // サムネイルが存在しない場合はnullを設定
             );
         }

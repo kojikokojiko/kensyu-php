@@ -24,7 +24,7 @@ if (!empty($_SESSION['errors'])) {
     </div>
 <?php endif; ?>
 
-<form method="post" action="/register">
+<form method="POST" action="/register" enctype="multipart/form-data">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required>
     <br>
@@ -34,6 +34,8 @@ if (!empty($_SESSION['errors'])) {
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
     <br>
+    <label for="profile_image">Profile Image:</label><br>
+    <input type="file" id="profile_image" name="profile_image" accept="image/*" required><br><br>
     <button type="submit">Register</button>
 </form>
 </body>

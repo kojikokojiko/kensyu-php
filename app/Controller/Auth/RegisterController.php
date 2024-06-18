@@ -8,6 +8,7 @@ use App\Http\Response;
 use App\Model\User;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
+use App\Utils\FileManager;
 use App\ValueObject\Email;
 use App\ValueObject\Password;
 use App\ValueObject\UserName;
@@ -32,10 +33,13 @@ class RegisterController implements ControllerInterface
      */
     public function __invoke(Request $req, PDO $db): Response
     {
+
         $userRepository = new UserRepository($db);
         $nameInput = trim($req->post['name']);
         $emailInput = trim($req->post['email']);
         $passwordInput = trim($req->post['password']);
+        $profileImage = $req->files['profile_image']; // ファイルを取得
+
 
         try {
             // バリューオブジェクトのバリデーション
@@ -49,8 +53,10 @@ class RegisterController implements ControllerInterface
                 return new Response(302, '', ['Location: /register']);
             }
 
+//            プロフィール画像の保存
+            $profileImagePath = FileManager::saveFile($profileImage, 'profile_image');
             // ユーザーを作成→ハッシュ化
-            $user = (new User(null, $name, $email, $password))->toHashedPassword();
+            $user = (new User(null, $name, $email, $password, $profileImagePath))->toHashedPassword();
 
             $userId = $userRepository->createUser($user);
             $this->sessionRepository->set('user_id', $userId);

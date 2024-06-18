@@ -21,7 +21,8 @@ readonly class User
         public ?int     $id,
         public UserName $name,
         public Email    $email,
-        public Password $password
+        public Password $password,
+        public string $profileImagePath
     )
     {
     }
@@ -32,7 +33,8 @@ readonly class User
             $this->id,
             $this->name,
             $this->email,
-            new Password($this->password->hash())
+            new Password($this->password->hash()),
+            $this->profileImagePath
         );
     }
 }
